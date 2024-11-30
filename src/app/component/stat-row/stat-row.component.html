@@ -1,0 +1,11 @@
+<form [formGroup]="statForm" (submit)="test()">
+  <label for="min-value">Min: </label>
+  <input id="min-value" type="number" formControlName="minValue" />
+
+  <label for="max-value">Max: </label>
+  <input id="max-value" type="number" formControlName="maxValue" />
+
+  <label for="weight-value">Weight: </label>
+  <input id="weight-value" type="number" formControlName="weight" />
+  <button type="submit" class="primary">TEST</button>
+</form>
