@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-stat-row',
-  standalone: true,
-  imports: [ReactiveFormsModule],
-  templateUrl: './stat-row.component.html',
-  styleUrl: './stat-row.component.css'
+    selector: 'app-stat-row',
+    imports: [ReactiveFormsModule],
+    templateUrl: './stat-row.component.html',
+    styleUrl: './stat-row.component.css'
 })
 export class StatRowComponent {
   statForm = new FormGroup({
