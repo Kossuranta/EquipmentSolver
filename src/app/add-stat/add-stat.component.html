@@ -1,0 +1,7 @@
+<div>
+  <form [formGroup]="addStatForm" (submit)="onSubmit()">
+    <label for="stat-name">Name: </label>
+    <input id="stat-name" type="text" formControlName="statName" />
+    <button type="submit" class="primary">Submit</button>
+  </form>
+</div>
