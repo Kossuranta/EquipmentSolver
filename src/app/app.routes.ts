@@ -8,4 +8,10 @@ export const routes: Routes = [
       return import('./home/home.component').then((m) => m.HomeComponent)
     },
   },
+  {
+    path: 'add-stat',
+    loadComponent: () => {
+      return import('./add-stat/add-stat.component').then((m) => m.AddStatComponent)
+    },
+  }
 ];
