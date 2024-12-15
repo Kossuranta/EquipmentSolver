@@ -1,0 +1,20 @@
+div {
+    padding-top: 10px;
+    color: #fff;
+}
+
+form {
+    display: grid;
+    grid-template-columns: 200px 200px 100px;
+}
+
+label {
+    text-align: right;
+    padding-right: 16px;
+    grid-column: 1 / 2;
+}
+
+input,
+button {
+    grid-column: 2 / 3;
+}

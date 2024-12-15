@@ -9,9 +9,10 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class StatRowComponent {
   statForm = new FormGroup({
+    statName: new FormControl(''),
     minValue: new FormControl(0),
-    maxValue: new FormControl(),
-    weight: new FormControl(),
+    maxValue: new FormControl(0),
+    weight: new FormControl(0),
   })
 
   test() {
