@@ -20,23 +20,23 @@
 | Write project spec (spec/README.md) | :white_check_mark: | Done |
 | Write progress tracker (spec/PROGRESS.md) | :white_check_mark: | This file |
 | Finalize all architectural decisions | :white_check_mark: | See decisions log below |
-| Create ASP.NET Core solution structure | :white_large_square: | Api, Core, Infrastructure projects |
-| Create Angular frontend project | :white_large_square: | Angular Material |
-| Set up Docker + docker-compose | :white_large_square: | Single app container + PostgreSQL container |
+| Create ASP.NET Core solution structure | :white_check_mark: | Api, Core, Infrastructure projects with references + NuGet packages |
+| Create Angular frontend project | :white_check_mark: | Angular 21 + Angular Material, standalone components |
+| Set up Docker + docker-compose | :white_check_mark: | Multi-stage Dockerfile (Angular + .NET), docker-compose with PostgreSQL |
 | Choose and configure database | :white_check_mark: | PostgreSQL via Npgsql |
 
 ## Phase 1: Foundation
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Define domain models (Core) | :white_large_square: | User, GameProfile, Equipment, Stats, slots, etc. |
-| Set up EF Core + DbContext | :white_large_square: | |
-| Create initial migration | :white_large_square: | |
-| Implement ASP.NET Identity + JWT auth | :white_large_square: | Username/password, no email |
-| Basic auth middleware | :white_large_square: | |
-| Set up Serilog logging | :white_large_square: | Console + file sinks |
-| Angular project scaffold | :white_large_square: | Angular Material, routing, auth service, interceptors |
-| Login / register UI | :white_large_square: | |
+| Define domain models (Core) | :white_check_mark: | All 15 entities: User, GameProfile, Equipment, Slots, Stats, Solver, Votes, Usage |
+| Set up EF Core + DbContext | :white_check_mark: | AppDbContext with Fluent API configurations, cascade/NoAction for cycles |
+| Create initial migration | :white_check_mark: | InitialCreate migration generated |
+| Implement ASP.NET Identity + JWT auth | :white_check_mark: | AuthService with register/login/refresh/delete, JWT token generation |
+| Basic auth middleware | :white_check_mark: | JWT Bearer auth configured in Program.cs |
+| Set up Serilog logging | :white_check_mark: | Console + file sinks, rolling daily, 30-day retention |
+| Angular project scaffold | :white_check_mark: | Routing, AuthService, JWT interceptor, auth/guest guards, proxy config |
+| Login / register UI | :white_check_mark: | Angular Material forms with validation, error handling, loading states |
 
 ## Phase 2: Core Features — Game Profiles & Equipment
 
@@ -129,5 +129,6 @@
 
 ## Notes
 
-- All architectural decisions are now finalized. Ready to begin Phase 0 scaffolding (solution structure, Angular project, Docker setup).
+- **Phase 0** and **Phase 1** are now complete. The full foundation is in place: solution structure, domain models, EF Core with migrations, ASP.NET Identity + JWT auth, Serilog logging, Angular scaffold with Material UI, login/register pages, and Docker configuration.
+- Ready to begin **Phase 2**: IGDB integration, game profile CRUD, equipment management.
 - See `spec/README.md` for the full list of deferred future enhancements.
