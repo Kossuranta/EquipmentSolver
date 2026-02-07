@@ -1,0 +1,6 @@
+@EquipmentSolver.Api_HostAddress = http://localhost:5105
+
+GET {{EquipmentSolver.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EquipmentSolver.Api/EquipmentSolver.Api.csproj" />
+    <Project Path="src/EquipmentSolver.Core/EquipmentSolver.Core.csproj" />
+    <Project Path="src/EquipmentSolver.Infrastructure/EquipmentSolver.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EquipmentSolver.Tests/EquipmentSolver.Tests.csproj" />
+  </Folder>
+</Solution>
