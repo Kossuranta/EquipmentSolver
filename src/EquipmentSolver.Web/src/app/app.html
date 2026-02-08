@@ -7,6 +7,9 @@
     </button>
   }
   <span class="spacer"></span>
+  <button mat-icon-button (click)="themeService.toggle()" [matTooltip]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+    <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
   @if (authService.isAuthenticated()) {
     <span class="username">{{ authService.username() }}</span>
     <button mat-button (click)="logout()">Logout</button>
