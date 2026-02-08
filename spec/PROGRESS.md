@@ -84,14 +84,14 @@
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Error handling & validation (backend) | :white_large_square: | |
-| Error handling & UX (frontend) | :white_large_square: | Loading states, error messages |
-| Account deletion (cascade) | :white_large_square: | |
-| Dockerize (single container: API + Angular static) | :white_large_square: | |
-| docker-compose (app + PostgreSQL) | :white_large_square: | |
+| Error handling & validation (backend) | :white_check_mark: | GlobalExceptionHandler middleware, consistent ErrorResponse for model validation, dev/prod error detail |
+| Error handling & UX (frontend) | :white_check_mark: | Global error interceptor (5xx, 429, network errors), NotificationService with MatSnackBar |
+| Account deletion (cascade) | :white_check_mark: | Properly cleans up NoAction FK records (votes, usages, user states) before cascade delete; UI in user menu |
+| Dockerize (single container: API + Angular static) | :white_check_mark: | Multi-stage Dockerfile (Node + .NET SDK + runtime), Angular into wwwroot, fixed .slnx reference |
+| docker-compose (app + PostgreSQL) | :white_check_mark: | IGDB env vars added, logs volume, health check on db |
+| Rate limiting (ASP.NET Core middleware) | :white_check_mark: | Fixed-window: auth (10/min/IP), API (120/min/user), solver (10/min/user) |
 | Set up reverse proxy on Unraid | :white_large_square: | Nginx Proxy Manager or similar |
 | Deploy to Unraid | :white_large_square: | |
-| Rate limiting (ASP.NET Core middleware) | :white_large_square: | Add at deployment time |
 | Backup strategy (pg_dump schedule) | :white_large_square: | Unraid User Scripts |
 
 ---
@@ -136,6 +136,13 @@
 | 2026-02-08 | Solver presets shared on public profiles | Public profile detail includes solver presets; non-owners can see/load presets in solver tab |
 | 2026-02-08 | Unsubscribe from used profiles | "Stop Using" button on dashboard cards (non-owned) and profile editor header |
 | 2026-02-08 | Dark mode default + theme toggle | ThemeService with localStorage persistence, dark default, sun/moon toggle in toolbar; theme-aware color-mix backgrounds |
+| 2026-02-08 | Global exception handler | Middleware catches unhandled exceptions, returns generic message in production, detailed in development |
+| 2026-02-08 | Model validation returns ErrorResponse | ConfigureApiBehaviorOptions maps ModelState errors to consistent ErrorResponse format |
+| 2026-02-08 | Rate limiting policies | auth (10/min/IP), api (120/min/user), solver (10/min/user); fixed-window via built-in middleware |
+| 2026-02-08 | Account deletion cleanup | Manually removes other users' votes, usages, equipment/slot states for owned profiles before cascade delete |
+| 2026-02-08 | Frontend error interceptor | Global HTTP error interceptor for 5xx, 429, and network errors via MatSnackBar notifications |
+| 2026-02-08 | User menu with account deletion | Replaced inline logout with dropdown menu containing Logout + Delete Account (with confirmation) |
+| 2026-02-08 | Dockerfile .NET 10 GA images | Changed from preview SDK/runtime to stable mcr.microsoft.com/dotnet/sdk:10.0 and aspnet:10.0 |
 
 ## Notes
 
@@ -145,5 +152,6 @@
 - Post-Phase 3 refinements: Equipment duplicate button with auto-naming, always-visible header actions, comma-to-dot decimal conversion, StatType simplified to single DisplayName with per-profile uniqueness.
 - Phase 4 added: ISocialService + SocialController for visibility toggle, browse/search public profiles (filter by game, sort by votes/usage/newest/name/creator, pagination), upvote/downvote system, deep-copy profiles to own account, "use" public profiles (linked read-only), public profile detail page with overview/equipment/solver-presets/patch-notes tabs, Browse page in toolbar, visibility slide toggle in profile editor general tab.
 - Post-Phase 4 fixes: Solver presets visible to non-owners in solver tab (read-only load), "Stop Using" button on dashboard and profile editor for unsubscribing from used profiles. Dark mode as default with light/dark toggle in toolbar, theme-aware backgrounds across all components.
-- Ready to begin **Phase 5**: Polish & infrastructure.
+- Phase 5 (partial): GlobalExceptionHandler middleware for consistent error responses (dev/prod aware), model validation returns ErrorResponse format, global error interceptor + NotificationService (MatSnackBar) on frontend, account deletion with proper NoAction FK cleanup + user menu UI, Dockerfile fixed (.slnx, non-preview images), docker-compose updated with IGDB env vars + logs volume, rate limiting added to all controllers (auth 10/min, API 120/min, solver 10/min).
+- Remaining for **Phase 5**: Unraid-specific tasks (reverse proxy setup, deployment, backup strategy).
 - See `spec/README.md` for the full list of deferred future enhancements.
