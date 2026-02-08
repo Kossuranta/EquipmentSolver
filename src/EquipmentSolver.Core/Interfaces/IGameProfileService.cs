@@ -20,12 +20,12 @@ public interface IGameProfileService
     /// <summary>
     /// Create a new game profile.
     /// </summary>
-    Task<GameProfile> CreateProfileAsync(string userId, string gameName, int igdbGameId, string? gameCoverUrl, string? description);
+    Task<GameProfile> CreateProfileAsync(string userId, string name, string gameName, int igdbGameId, string? gameCoverUrl, string? description);
 
     /// <summary>
-    /// Update profile metadata (description, game info). Only the owner can update.
+    /// Update profile metadata (name, description, game info). Only the owner can update.
     /// </summary>
-    Task<GameProfile?> UpdateProfileAsync(int profileId, string userId, string gameName, int igdbGameId, string? gameCoverUrl, string? description);
+    Task<GameProfile?> UpdateProfileAsync(int profileId, string userId, string name, string gameName, int igdbGameId, string? gameCoverUrl, string? description);
 
     /// <summary>
     /// Delete a profile. Only the owner can delete.

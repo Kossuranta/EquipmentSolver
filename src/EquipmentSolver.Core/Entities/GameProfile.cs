@@ -9,6 +9,11 @@ public class GameProfile
     public string OwnerId { get; set; } = null!;
     public ApplicationUser Owner { get; set; } = null!;
 
+    /// <summary>
+    /// User-chosen profile name (e.g., "PvP Build", "Max Magic Resist").
+    /// </summary>
+    public string Name { get; set; } = null!;
+
     // IGDB game data
     public int IgdbGameId { get; set; }
     public string GameName { get; set; } = null!;

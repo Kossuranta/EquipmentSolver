@@ -42,6 +42,22 @@ export class RegisterPage {
     );
   }
 
+  get password(): string {
+    return this.form.get('password')?.value ?? '';
+  }
+
+  hasUppercase(): boolean {
+    return /[A-Z]/.test(this.password);
+  }
+
+  hasLowercase(): boolean {
+    return /[a-z]/.test(this.password);
+  }
+
+  hasDigit(): boolean {
+    return /\d/.test(this.password);
+  }
+
   onSubmit(): void {
     if (this.form.invalid) return;
 

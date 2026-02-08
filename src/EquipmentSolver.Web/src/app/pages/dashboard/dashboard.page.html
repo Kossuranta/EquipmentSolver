@@ -47,9 +47,9 @@
               <mat-icon>sports_esports</mat-icon>
             </div>
           }
-          <mat-card-title>{{ profile.gameName }}</mat-card-title>
+          <mat-card-title>{{ profile.name }}</mat-card-title>
           <mat-card-subtitle>
-            v{{ profile.version }}
+            {{ profile.gameName }} &middot; v{{ profile.version }}
             @if (!profile.isOwner) {
               <span> &middot; by {{ profile.ownerName }}</span>
             }

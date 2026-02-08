@@ -5,6 +5,10 @@ namespace EquipmentSolver.Api.DTOs.Profiles;
 public class CreateProfileRequest
 {
     [Required]
+    [StringLength(100)]
+    public string Name { get; set; } = null!;
+
+    [Required]
     [StringLength(200)]
     public string GameName { get; set; } = null!;
 

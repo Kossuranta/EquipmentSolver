@@ -33,11 +33,15 @@ export class ProfileGeneralTabComponent {
   error = signal<string | null>(null);
 
   form = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
     description: new FormControl('', [Validators.maxLength(500)]),
   });
 
   startEditing(): void {
-    this.form.patchValue({ description: this.profile.description ?? '' });
+    this.form.patchValue({
+      name: this.profile.name,
+      description: this.profile.description ?? '',
+    });
     this.editing.set(true);
   }
 
@@ -52,6 +56,7 @@ export class ProfileGeneralTabComponent {
 
     this.profileService
       .updateProfile(this.profile.id, {
+        name: this.form.value.name!,
         gameName: this.profile.gameName,
         igdbGameId: this.profile.igdbGameId,
         gameCoverUrl: this.profile.gameCoverUrl,

@@ -33,6 +33,7 @@ public class ProfilesController : ControllerBase
         var response = profiles.Select(p => new ProfileResponse
         {
             Id = p.Id,
+            Name = p.Name,
             GameName = p.GameName,
             IgdbGameId = p.IgdbGameId,
             GameCoverUrl = p.GameCoverUrl,
@@ -68,6 +69,7 @@ public class ProfilesController : ControllerBase
         var response = new ProfileDetailResponse
         {
             Id = profile.Id,
+            Name = profile.Name,
             GameName = profile.GameName,
             IgdbGameId = profile.IgdbGameId,
             GameCoverUrl = profile.GameCoverUrl,
@@ -117,11 +119,12 @@ public class ProfilesController : ControllerBase
     public async Task<IActionResult> CreateProfile([FromBody] CreateProfileRequest request)
     {
         var profile = await _profileService.CreateProfileAsync(
-            UserId, request.GameName, request.IgdbGameId, request.GameCoverUrl, request.Description);
+            UserId, request.Name, request.GameName, request.IgdbGameId, request.GameCoverUrl, request.Description);
 
         var response = new ProfileResponse
         {
             Id = profile.Id,
+            Name = profile.Name,
             GameName = profile.GameName,
             IgdbGameId = profile.IgdbGameId,
             GameCoverUrl = profile.GameCoverUrl,
@@ -155,7 +158,7 @@ public class ProfilesController : ControllerBase
             return Forbid();
 
         var profile = await _profileService.UpdateProfileAsync(
-            id, UserId, request.GameName, request.IgdbGameId, request.GameCoverUrl, request.Description);
+            id, UserId, request.Name, request.GameName, request.IgdbGameId, request.GameCoverUrl, request.Description);
 
         if (profile is null)
             return NotFound();
@@ -163,6 +166,7 @@ public class ProfilesController : ControllerBase
         var response = new ProfileResponse
         {
             Id = profile.Id,
+            Name = profile.Name,
             GameName = profile.GameName,
             IgdbGameId = profile.IgdbGameId,
             GameCoverUrl = profile.GameCoverUrl,

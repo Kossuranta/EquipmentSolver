@@ -78,11 +78,12 @@ public class GameProfileService : IGameProfileService
 
     /// <inheritdoc />
     public async Task<GameProfile> CreateProfileAsync(
-        string userId, string gameName, int igdbGameId, string? gameCoverUrl, string? description)
+        string userId, string name, string gameName, int igdbGameId, string? gameCoverUrl, string? description)
     {
         var profile = new GameProfile
         {
             OwnerId = userId,
+            Name = name,
             GameName = gameName,
             IgdbGameId = igdbGameId,
             GameCoverUrl = gameCoverUrl,
@@ -96,15 +97,15 @@ public class GameProfileService : IGameProfileService
         _db.GameProfiles.Add(profile);
         await _db.SaveChangesAsync();
 
-        _logger.LogInformation("Profile {ProfileId} created by user {UserId} for game {Game}",
-            profile.Id, userId, gameName);
+        _logger.LogInformation("Profile {ProfileId} '{ProfileName}' created by user {UserId} for game {Game}",
+            profile.Id, name, userId, gameName);
 
         return profile;
     }
 
     /// <inheritdoc />
     public async Task<GameProfile?> UpdateProfileAsync(
-        int profileId, string userId, string gameName, int igdbGameId, string? gameCoverUrl, string? description)
+        int profileId, string userId, string name, string gameName, int igdbGameId, string? gameCoverUrl, string? description)
     {
         var profile = await _db.GameProfiles
             .FirstOrDefaultAsync(p => p.Id == profileId && p.OwnerId == userId);
@@ -112,6 +113,7 @@ public class GameProfileService : IGameProfileService
         if (profile is null)
             return null;
 
+        profile.Name = name;
         profile.GameName = gameName;
         profile.IgdbGameId = igdbGameId;
         profile.GameCoverUrl = gameCoverUrl;

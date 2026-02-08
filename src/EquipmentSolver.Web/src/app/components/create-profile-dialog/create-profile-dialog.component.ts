@@ -30,6 +30,7 @@ import { GameSearchResult } from '../../models/profile.models';
 export class CreateProfileDialogComponent {
   gameSearchControl = new FormControl('');
   form = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
     description: new FormControl('', [Validators.maxLength(500)]),
   });
 
@@ -83,12 +84,14 @@ export class CreateProfileDialogComponent {
       this.error.set('Please select a game from the search results.');
       return;
     }
+    if (this.form.invalid) return;
 
     this.saving.set(true);
     this.error.set(null);
 
     this.profileService
       .createProfile({
+        name: this.form.value.name!,
         gameName: game.name,
         igdbGameId: game.igdbId,
         gameCoverUrl: game.coverUrl,

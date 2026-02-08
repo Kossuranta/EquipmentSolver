@@ -6,6 +6,7 @@ namespace EquipmentSolver.Api.DTOs.Profiles;
 public class ProfileDetailResponse
 {
     public int Id { get; set; }
+    public string Name { get; set; } = null!;
     public string GameName { get; set; } = null!;
     public int IgdbGameId { get; set; }
     public string? GameCoverUrl { get; set; }

@@ -33,6 +33,13 @@
           }
         </mat-form-field>
 
+        <ul class="password-requirements">
+          <li [class.met]="password.length >= 8">At least 8 characters</li>
+          <li [class.met]="hasUppercase()">At least one uppercase letter</li>
+          <li [class.met]="hasLowercase()">At least one lowercase letter</li>
+          <li [class.met]="hasDigit()">At least one digit</li>
+        </ul>
+
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Confirm Password</mat-label>
           <input matInput type="password" formControlName="confirmPassword" autocomplete="new-password" />
