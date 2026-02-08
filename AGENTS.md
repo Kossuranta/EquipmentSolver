@@ -16,11 +16,21 @@ This repository is a **full-stack web application** for optimizing equipment loa
 | **Hosting** | Single Docker container on Unraid server (behind reverse proxy) |
 | **CI/CD** | Manual build/deploy for now |
 
+## Development Environment
+
+- **OS**: Windows 11
+- **Shell**: **PowerShell** — all terminal commands must use PowerShell syntax (not bash/sh).
+  - Use `;` to chain commands, not `&&`.
+  - Use backtick (`` ` ``) for line continuation, not `\`.
+  - Use `Remove-Item` instead of `rm`, `Copy-Item` instead of `cp`, etc., or use the tool equivalents.
+  - Heredocs are not supported — pass multi-line strings via PowerShell syntax or avoid them.
+
 ## Required Behavior
 
 - **Before implementing features**, read the relevant spec documents in `spec/` and use them as the source of truth for features, terms, and architecture:
   - Start here: `spec/README.md`
   - Progress tracking: `spec/PROGRESS.md`
+- **To find code quickly**, refer to `INDEX.md` — it maps every file in the project by feature area (controllers, services, components, etc.).
 - If the developer gives new requirements, changes rules, or clarifies terminology, **proactively suggest edits** to the relevant file(s) in `spec/` so the spec stays current.
 - If something in `spec/` is ambiguous or incomplete, **ask questions** rather than guessing.
 
