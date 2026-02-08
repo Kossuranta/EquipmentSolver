@@ -7,9 +7,9 @@ COPY src/EquipmentSolver.Web/ ./
 RUN npm run build -- --configuration production
 
 # === Stage 2: Build .NET backend ===
-FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS backend-build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS backend-build
 WORKDIR /app
-COPY EquipmentSolver.sln ./
+COPY EquipmentSolver.slnx ./
 COPY src/EquipmentSolver.Core/EquipmentSolver.Core.csproj src/EquipmentSolver.Core/
 COPY src/EquipmentSolver.Infrastructure/EquipmentSolver.Infrastructure.csproj src/EquipmentSolver.Infrastructure/
 COPY src/EquipmentSolver.Api/EquipmentSolver.Api.csproj src/EquipmentSolver.Api/
@@ -20,12 +20,12 @@ COPY tests/ tests/
 RUN dotnet publish src/EquipmentSolver.Api/EquipmentSolver.Api.csproj -c Release -o /app/publish --no-restore
 
 # === Stage 3: Runtime ===
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=backend-build /app/publish ./
 COPY --from=frontend-build /app/frontend/dist/equipment-solver-web/browser ./wwwroot/
 
-# Create logs directory
+# Create logs directory and set permissions
 RUN mkdir -p /app/logs
 
 EXPOSE 8080

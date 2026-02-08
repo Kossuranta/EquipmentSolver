@@ -12,6 +12,10 @@ services:
       - Jwt__Secret=${JWT_SECRET:-CHANGE_THIS_TO_A_SECURE_SECRET_KEY_AT_LEAST_32_CHARS}
       - Jwt__Issuer=EquipmentSolver
       - Jwt__Audience=EquipmentSolver
+      - Igdb__ClientId=${IGDB_CLIENT_ID:-}
+      - Igdb__ClientSecret=${IGDB_CLIENT_SECRET:-}
+    volumes:
+      - app-logs:/app/logs
     depends_on:
       db:
         condition: service_healthy
@@ -36,3 +40,4 @@ services:
 
 volumes:
   pgdata:
+  app-logs:

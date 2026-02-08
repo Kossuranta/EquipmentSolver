@@ -84,6 +84,8 @@ The app is available at **http://localhost:8080**. The Angular frontend is built
 |----------|-------------|---------|
 | `POSTGRES_PASSWORD` | PostgreSQL password | `changeme` |
 | `JWT_SECRET` | Secret key for JWT signing (min 32 chars) | placeholder (change in production!) |
+| `IGDB_CLIENT_ID` | Twitch/IGDB API client ID | — |
+| `IGDB_CLIENT_SECRET` | Twitch/IGDB API client secret | — |
 | `ASPNETCORE_ENVIRONMENT` | ASP.NET environment | `Production` |
 
 ## Project Structure
