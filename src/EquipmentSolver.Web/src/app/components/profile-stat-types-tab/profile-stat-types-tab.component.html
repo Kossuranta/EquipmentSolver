@@ -6,18 +6,12 @@
   <div class="add-row">
     <form [formGroup]="addForm" (ngSubmit)="addStatType()" class="add-form">
       <mat-form-field>
-        <mat-label>Display Name</mat-label>
+        <mat-label>Name</mat-label>
         <input
           matInput
           formControlName="displayName"
           placeholder="e.g., Fire Resistance"
-          (blur)="autoName()"
         />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Internal Name</mat-label>
-        <input matInput formControlName="name" placeholder="e.g., fire_res" />
-        <mat-hint>Lowercase, underscores only</mat-hint>
       </mat-form-field>
       <button mat-flat-button type="submit" [disabled]="addForm.invalid">
         <mat-icon>add</mat-icon>
@@ -31,21 +25,8 @@
   <p class="empty-hint">No stat types defined yet. Add stats like Armor, Weight, Fire Resistance, etc.</p>
 } @else {
   <table mat-table [dataSource]="statTypes" class="stat-table">
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Internal Name</th>
-      <td mat-cell *matCellDef="let st">
-        @if (editingId() === st.id) {
-          <mat-form-field class="inline-field">
-            <input matInput [formControl]="editForm.controls.name" />
-          </mat-form-field>
-        } @else {
-          <code>{{ st.name }}</code>
-        }
-      </td>
-    </ng-container>
-
     <ng-container matColumnDef="displayName">
-      <th mat-header-cell *matHeaderCellDef>Display Name</th>
+      <th mat-header-cell *matHeaderCellDef>Name</th>
       <td mat-cell *matCellDef="let st">
         @if (editingId() === st.id) {
           <mat-form-field class="inline-field">

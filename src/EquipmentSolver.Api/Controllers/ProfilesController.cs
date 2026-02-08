@@ -91,7 +91,6 @@ public class ProfilesController : ControllerBase
             StatTypes = profile.StatTypes.Select(st => new StatTypeDto
             {
                 Id = st.Id,
-                Name = st.Name,
                 DisplayName = st.DisplayName
             }).ToList(),
             Equipment = profile.Equipment.Select(e => new EquipmentDto

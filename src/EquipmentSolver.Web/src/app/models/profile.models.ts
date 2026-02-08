@@ -46,7 +46,6 @@ export interface SlotDto {
 
 export interface StatTypeDto {
   id: number;
-  name: string;
   displayName: string;
 }
 
@@ -91,12 +90,10 @@ export interface ReorderSlotsRequest {
 }
 
 export interface CreateStatTypeRequest {
-  name: string;
   displayName: string;
 }
 
 export interface UpdateStatTypeRequest {
-  name: string;
   displayName: string;
 }
 
@@ -180,7 +177,6 @@ export interface SolveResultDto {
 
 export interface StatTotalDto {
   statTypeId: number;
-  statName: string;
   statDisplayName: string;
   value: number;
 }

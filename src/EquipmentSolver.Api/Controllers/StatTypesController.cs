@@ -41,7 +41,7 @@ public class StatTypesController : ControllerBase
         var statTypes = await _db.StatTypes
             .Where(st => st.ProfileId == profileId)
             .OrderBy(st => st.DisplayName)
-            .Select(st => new StatTypeDto { Id = st.Id, Name = st.Name, DisplayName = st.DisplayName })
+            .Select(st => new StatTypeDto { Id = st.Id, DisplayName = st.DisplayName })
             .ToListAsync();
 
         return Ok(statTypes);
@@ -60,14 +60,13 @@ public class StatTypesController : ControllerBase
             return Forbid();
 
         var exists = await _db.StatTypes
-            .AnyAsync(st => st.ProfileId == profileId && st.Name == request.Name);
+            .AnyAsync(st => st.ProfileId == profileId && st.DisplayName == request.DisplayName);
         if (exists)
             return BadRequest(new ErrorResponse("A stat type with this name already exists in the profile."));
 
         var statType = new StatType
         {
             ProfileId = profileId,
-            Name = request.Name,
             DisplayName = request.DisplayName
         };
 
@@ -75,7 +74,7 @@ public class StatTypesController : ControllerBase
         await _db.SaveChangesAsync();
         await TouchProfile(profileId);
 
-        var dto = new StatTypeDto { Id = statType.Id, Name = statType.Name, DisplayName = statType.DisplayName };
+        var dto = new StatTypeDto { Id = statType.Id, DisplayName = statType.DisplayName };
         return Created($"api/v1/profiles/{profileId}/stat-types/{statType.Id}", dto);
     }
 
@@ -96,18 +95,17 @@ public class StatTypesController : ControllerBase
         if (statType is null)
             return NotFound();
 
-        // Check for duplicate name (excluding self)
+        // Check for duplicate display name (excluding self)
         var exists = await _db.StatTypes
-            .AnyAsync(st => st.ProfileId == profileId && st.Name == request.Name && st.Id != statTypeId);
+            .AnyAsync(st => st.ProfileId == profileId && st.DisplayName == request.DisplayName && st.Id != statTypeId);
         if (exists)
             return BadRequest(new ErrorResponse("A stat type with this name already exists in the profile."));
 
-        statType.Name = request.Name;
         statType.DisplayName = request.DisplayName;
         await _db.SaveChangesAsync();
         await TouchProfile(profileId);
 
-        return Ok(new StatTypeDto { Id = statType.Id, Name = statType.Name, DisplayName = statType.DisplayName });
+        return Ok(new StatTypeDto { Id = statType.Id, DisplayName = statType.DisplayName });
     }
 
     /// <summary>

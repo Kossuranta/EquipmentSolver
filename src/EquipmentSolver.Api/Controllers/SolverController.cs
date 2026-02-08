@@ -91,11 +91,10 @@ public class SolverController : ControllerBase
                     .Select(kv => new StatTotalDto
                     {
                         StatTypeId = kv.Key,
-                        StatName = statTypes[kv.Key].Name,
                         StatDisplayName = statTypes[kv.Key].DisplayName,
                         Value = Math.Round(kv.Value, 4)
                     })
-                    .OrderBy(st => st.StatName)
+                    .OrderBy(st => st.StatDisplayName)
                     .ToList(),
                 Assignments = r.Assignments.Select(a => new SlotAssignmentDto
                 {

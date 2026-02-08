@@ -10,7 +10,6 @@ public class StatTypeConfiguration : IEntityTypeConfiguration<StatType>
     {
         builder.HasKey(s => s.Id);
 
-        builder.Property(s => s.Name).IsRequired().HasMaxLength(100);
         builder.Property(s => s.DisplayName).IsRequired().HasMaxLength(200);
 
         builder.HasOne(s => s.Profile)
@@ -18,6 +17,6 @@ public class StatTypeConfiguration : IEntityTypeConfiguration<StatType>
             .HasForeignKey(s => s.ProfileId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(s => new { s.ProfileId, s.Name }).IsUnique();
+        builder.HasIndex(s => new { s.ProfileId, s.DisplayName }).IsUnique();
     }
 }

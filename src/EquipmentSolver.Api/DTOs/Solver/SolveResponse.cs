@@ -28,7 +28,6 @@ public class SolveResultDto
 public class StatTotalDto
 {
     public int StatTypeId { get; set; }
-    public string StatName { get; set; } = null!;
     public string StatDisplayName { get; set; } = null!;
     public double Value { get; set; }
 }

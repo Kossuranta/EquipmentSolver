@@ -28,35 +28,25 @@ export class ProfileStatTypesTabComponent {
   @Output() statTypesChanged = new EventEmitter<StatTypeDto[]>();
 
   addForm = new FormGroup({
-    name: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(50),
-      Validators.pattern(/^[a-z][a-z0-9_]*$/),
-    ]),
-    displayName: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+    displayName: new FormControl('', [Validators.required, Validators.maxLength(200)]),
   });
 
   editingId = signal<number | null>(null);
   editForm = new FormGroup({
-    name: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(50),
-      Validators.pattern(/^[a-z][a-z0-9_]*$/),
-    ]),
-    displayName: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+    displayName: new FormControl('', [Validators.required, Validators.maxLength(200)]),
   });
 
   error = signal<string | null>(null);
-  displayedColumns = ['name', 'displayName', 'actions'];
+  displayedColumns = ['displayName', 'actions'];
 
   addStatType(): void {
     if (this.addForm.invalid) return;
 
-    const { name, displayName } = this.addForm.value;
+    const { displayName } = this.addForm.value;
     this.error.set(null);
 
     this.profileService
-      .createStatType(this.profileId, { name: name!, displayName: displayName! })
+      .createStatType(this.profileId, { displayName: displayName! })
       .subscribe({
         next: statType => {
           this.statTypesChanged.emit([...this.statTypes, statType]);
@@ -68,7 +58,7 @@ export class ProfileStatTypesTabComponent {
 
   startEditing(st: StatTypeDto): void {
     this.editingId.set(st.id);
-    this.editForm.patchValue({ name: st.name, displayName: st.displayName });
+    this.editForm.patchValue({ displayName: st.displayName });
   }
 
   cancelEditing(): void {
@@ -78,11 +68,11 @@ export class ProfileStatTypesTabComponent {
   saveStatType(st: StatTypeDto): void {
     if (this.editForm.invalid) return;
 
-    const { name, displayName } = this.editForm.value;
+    const { displayName } = this.editForm.value;
     this.error.set(null);
 
     this.profileService
-      .updateStatType(this.profileId, st.id, { name: name!, displayName: displayName! })
+      .updateStatType(this.profileId, st.id, { displayName: displayName! })
       .subscribe({
         next: updated => {
           const newList = this.statTypes.map(s => (s.id === updated.id ? updated : s));
@@ -108,18 +98,6 @@ export class ProfileStatTypesTabComponent {
       },
       error: () => this.error.set('Failed to delete stat type.'),
     });
-  }
-
-  /// Auto-generate internal name from display name
-  autoName(): void {
-    const display = this.addForm.value.displayName ?? '';
-    const auto = display
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '_')
-      .replace(/^_|_$/g, '');
-    if (!this.addForm.value.name) {
-      this.addForm.patchValue({ name: auto });
-    }
   }
 
   constructor(private readonly profileService: ProfileService) {}
