@@ -42,16 +42,16 @@
 
 | Task | Status | Notes |
 |------|--------|-------|
-| IGDB API integration (backend) | :white_large_square: | Game search proxy/cache |
-| Game profile CRUD (API) | :white_large_square: | Includes IGDB game selection, version field |
-| Game profile UI (list, create, edit) | :white_large_square: | IGDB searchable dropdown for game, version display |
-| Profile patch notes (API) | :white_large_square: | CRUD for patch notes, tied to version bumps |
-| Profile patch notes (UI) | :white_large_square: | Creator: write notes on version bump; viewers: patch notes history |
-| Equipment slots management (API + UI) | :white_large_square: | Define slots per game, per-user enable/disable |
-| Stat types management (API + UI) | :white_large_square: | Define stat types per game |
-| Equipment CRUD (API) | :white_large_square: | Multi-slot compatibility (many-to-many) |
-| Equipment editor UI | :white_large_square: | Add/edit equipment with stats + slot compatibility |
-| Per-user equipment selection (API + UI) | :white_large_square: | Enable/disable items, enable all/disable all, persisted per user |
+| IGDB API integration (backend) | :white_check_mark: | IgdbService with Twitch OAuth2, stale-while-revalidate cache (fresh 24h, stale-serve 72h), GamesController |
+| Game profile CRUD (API) | :white_check_mark: | GameProfileService + ProfilesController, full CRUD with owner checks |
+| Game profile UI (list, create, edit) | :white_check_mark: | Dashboard with profile cards, create dialog with IGDB search, profile editor with tabs |
+| Profile patch notes (API) | :white_check_mark: | PatchNotesController, version bump + patch note creation |
+| Profile patch notes (UI) | :white_check_mark: | Patch notes tab with version bump form (3 int inputs), history list |
+| Equipment slots management (API + UI) | :white_check_mark: | SlotsController with CRUD + reorder, drag-and-drop UI via CDK DragDrop |
+| Stat types management (API + UI) | :white_check_mark: | StatTypesController with CRUD, table UI with inline editing, auto-name generation |
+| Equipment CRUD (API) | :white_check_mark: | EquipmentController with slot/stat validation, replace-on-update pattern |
+| Equipment editor UI | :white_check_mark: | Equipment dialog with slot checkboxes + stat picker (select applicable stats only) |
+| Per-user equipment selection (API + UI) | :white_check_mark: | UserStateController, toggle items/slots, enable/disable all, optimistic UI updates |
 | Bulk import/export equipment | :white_large_square: | Deferred — nice-to-have |
 
 ## Phase 3: Solver
@@ -126,9 +126,11 @@
 | 2026-02-07 | Empty slots in solver | Solver can leave a slot empty if that's optimal |
 | 2026-02-07 | Per-user equipment selection | Toggle items on/off per user; persisted; survives owner edits; enable/disable all buttons |
 | 2026-02-07 | Profile versioning + patch notes | Free-form version string, patch notes history, no rollback; design for future export/import |
+| 2026-02-08 | IGDB stale-while-revalidate cache | Fresh for 24h, background-refresh 24–72h, expire after 72h; 3-day resilience if IGDB is down |
 
 ## Notes
 
-- **Phase 0** and **Phase 1** are now complete. The full foundation is in place: solution structure, domain models, EF Core with migrations, ASP.NET Identity + JWT auth, Serilog logging, Angular scaffold with Material UI, login/register pages, and Docker configuration.
-- Ready to begin **Phase 2**: IGDB integration, game profile CRUD, equipment management.
+- **Phases 0, 1, and 2** are now complete.
+- Phase 2 added: IGDB integration (Twitch OAuth2 + caching), game profile CRUD (API + UI), equipment slots with drag-and-drop reordering, stat types with auto-naming, equipment CRUD with slot/stat picker dialogs, profile patch notes with version bumping, and per-user equipment/slot selection with optimistic UI.
+- Ready to begin **Phase 3**: Solver algorithm and UI.
 - See `spec/README.md` for the full list of deferred future enhancements.
