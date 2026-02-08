@@ -144,6 +144,8 @@
 | 2026-02-08 | User menu with account deletion | Replaced inline logout with dropdown menu containing Logout + Delete Account (with confirmation) |
 | 2026-02-08 | Dockerfile .NET 10 GA images | Changed from preview SDK/runtime to stable mcr.microsoft.com/dotnet/sdk:10.0 and aspnet:10.0 |
 | 2026-02-08 | Equipment panel shows slot names | Panel description displays actual slot names (truncated after 2 with tooltip) instead of just a count |
+| 2026-02-08 | Replace window.confirm() with Material Dialog | Reusable ConfirmDialogComponent for all destructive actions; non-blocking, automation-friendly, consistent UX |
+| 2026-02-08 | Auth interceptor scoped to public endpoints | Interceptor was skipping Authorization header for all `/auth/` URLs; narrowed to only `/auth/login`, `/auth/register`, `/auth/refresh` |
 
 ## Notes
 
@@ -154,7 +156,8 @@
 - Phase 4 added: ISocialService + SocialController for visibility toggle, browse/search public profiles (filter by game, sort by votes/usage/newest/name/creator, pagination), upvote/downvote system, deep-copy profiles to own account, "use" public profiles (linked read-only), public profile detail page with overview/equipment/solver-presets/patch-notes tabs, Browse page in toolbar, visibility slide toggle in profile editor general tab.
 - Post-Phase 4 fixes: Solver presets visible to non-owners in solver tab (read-only load), "Stop Using" button on dashboard and profile editor for unsubscribing from used profiles. Dark mode as default with light/dark toggle in toolbar, theme-aware backgrounds across all components.
 - Phase 5 (partial): GlobalExceptionHandler middleware for consistent error responses (dev/prod aware), model validation returns ErrorResponse format, global error interceptor + NotificationService (MatSnackBar) on frontend, account deletion with proper NoAction FK cleanup + user menu UI, Dockerfile fixed (.slnx, non-preview images), docker-compose updated with IGDB env vars + logs volume, rate limiting added to all controllers (auth 10/min, API 120/min, solver 10/min).
-- UI polish: Equipment panel description shows actual slot names instead of count, truncated after 2 with "+N more" tooltip.
+- UI polish: Equipment panel description shows actual slot names instead of count, truncated after 2 with "+N more" tooltip. Replaced all `window.confirm()` calls with a reusable Material confirm dialog for better UX and browser automation compatibility.
+- Bug fix: Auth interceptor was skipping Authorization header for all `/auth/` URLs, which prevented authenticated calls to `/auth/account` (delete account). Narrowed exclusion to only public auth endpoints.
 - Developer tooling: Added `INDEX.md` (codebase map by feature area), PowerShell dev environment docs in `AGENTS.md`, Cursor "commit" command rule.
 - Remaining for **Phase 5**: Unraid-specific tasks (reverse proxy setup, deployment, backup strategy).
 - See `spec/README.md` for the full list of deferred future enhancements.
