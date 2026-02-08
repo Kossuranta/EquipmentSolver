@@ -82,7 +82,7 @@ You are pair-programming with a professional developer (solo hobby project).
 - PostgreSQL runs in a separate container via docker-compose with a persistent volume.
 - Backups via scheduled `pg_dump` (Unraid User Scripts plugin).
 
-## Project Structure (Planned)
+## Project Structure
 
 ```
 EquipmentSolver/

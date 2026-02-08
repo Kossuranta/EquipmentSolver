@@ -165,7 +165,7 @@ Key entities (preliminary):
 - `GameProfile` — id, owner_id, igdb_game_id, game_name, game_cover_url, description, version (string, e.g. "0.6.1"), is_public, vote_score, usage_count
 - `ProfilePatchNote` — id, profile_id, version, date, content
 - `EquipmentSlot` — id, profile_id, name, sort_order
-- `StatType` — id, profile_id, name, display_name
+- `StatType` — id, profile_id, display_name
 - `Equipment` — id, profile_id, name
 - `EquipmentSlotCompatibility` — equipment_id, slot_id (many-to-many: which slots an item can go in)
 - `EquipmentStat` — equipment_id, stat_type_id, value
