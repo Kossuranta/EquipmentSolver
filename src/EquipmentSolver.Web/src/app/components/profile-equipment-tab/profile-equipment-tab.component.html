@@ -23,7 +23,10 @@
         <mat-expansion-panel-header>
           <mat-panel-title>{{ item.name }}</mat-panel-title>
           <mat-panel-description>
-            {{ item.compatibleSlotIds.length }} slot(s) &middot; {{ item.stats.length }} stat(s)
+            <span class="slot-list" [matTooltip]="getAllSlotNames(item)" [matTooltipDisabled]="item.compatibleSlotIds.length <= 2">
+              {{ getSlotSummary(item) }}
+            </span>
+            &middot; {{ item.stats.length }} stat(s)
           </mat-panel-description>
           @if (isOwner) {
             <div class="header-actions" (click)="$event.stopPropagation()">

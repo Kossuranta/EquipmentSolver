@@ -130,6 +130,18 @@ export class ProfileEquipmentTabComponent {
     return this.slots.find(s => s.id === slotId)?.name ?? 'Unknown';
   }
 
+  /** Returns a short summary of slot names, truncating after 2. */
+  getSlotSummary(item: EquipmentDto): string {
+    const names = item.compatibleSlotIds.map(id => this.getSlotName(id));
+    if (names.length <= 2) return names.join(', ');
+    return `${names[0]}, ${names[1]} +${names.length - 2} more`;
+  }
+
+  /** Returns all slot names joined, used for tooltip on truncated lists. */
+  getAllSlotNames(item: EquipmentDto): string {
+    return item.compatibleSlotIds.map(id => this.getSlotName(id)).join(', ');
+  }
+
   getStatDisplay(stat: { statTypeId: number; value: number }): string {
     const st = this.statTypes.find(s => s.id === stat.statTypeId);
     return `${st?.displayName ?? 'Unknown'}: ${stat.value}`;
