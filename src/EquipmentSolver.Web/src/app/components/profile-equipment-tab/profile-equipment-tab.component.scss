@@ -1,0 +1,56 @@
+.error-message {
+  color: var(--mat-sys-error);
+  margin-bottom: 16px;
+}
+
+.add-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hint {
+  opacity: 0.5;
+  font-size: 13px;
+}
+
+.empty-hint {
+  opacity: 0.5;
+  font-style: italic;
+  margin-top: 16px;
+}
+
+.equipment-detail {
+  padding-top: 8px;
+}
+
+.detail-section {
+  margin-bottom: 16px;
+
+  h4 {
+    margin: 0 0 8px 0;
+    opacity: 0.7;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-row {
+  font-size: 14px;
+}
+
+.equipment-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}

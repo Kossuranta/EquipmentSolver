@@ -1,0 +1,66 @@
+.error-message {
+  color: var(--mat-sys-error);
+  margin-bottom: 16px;
+}
+
+.add-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.empty-hint {
+  opacity: 0.5;
+  font-style: italic;
+  margin-top: 16px;
+}
+
+.slot-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.drag-handle {
+  cursor: grab;
+  opacity: 0.4;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.slot-name {
+  flex: 1;
+  font-size: 15px;
+}
+
+.edit-field {
+  flex: 1;
+}
+
+.cdk-drag-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

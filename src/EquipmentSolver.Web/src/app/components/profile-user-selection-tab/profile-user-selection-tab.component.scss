@@ -1,0 +1,89 @@
+.error-message {
+  color: var(--mat-sys-error);
+  margin-bottom: 16px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.selection-count {
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.slots-section,
+.equipment-section {
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 16px 0 4px 0;
+  }
+}
+
+.section-hint {
+  font-size: 13px;
+  opacity: 0.6;
+  margin: 0 0 12px 0;
+}
+
+.slot-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+.empty-hint {
+  opacity: 0.5;
+  font-style: italic;
+}
+
+.equipment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.equipment-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: opacity 0.15s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}
+
+.item-name {
+  font-weight: 500;
+}
+
+.item-meta {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+mat-divider {
+  margin: 16px 0;
+}

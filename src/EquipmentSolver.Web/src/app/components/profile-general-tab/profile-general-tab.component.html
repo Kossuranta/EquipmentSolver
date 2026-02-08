@@ -1,0 +1,52 @@
+<div class="general-info">
+  <div class="info-row">
+    @if (profile.gameCoverUrl) {
+      <img [src]="profile.gameCoverUrl" [alt]="profile.gameName" class="game-cover-large" />
+    }
+    <div class="info-details">
+      <h2>{{ profile.gameName }}</h2>
+      <p class="meta">Version {{ profile.version }} &middot; Created {{ profile.createdAt | date: 'mediumDate' }}</p>
+
+      @if (!editing()) {
+        @if (profile.description) {
+          <p class="description">{{ profile.description }}</p>
+        } @else {
+          <p class="description no-description">No description</p>
+        }
+
+        @if (isOwner) {
+          <button mat-button (click)="startEditing()">
+            <mat-icon>edit</mat-icon>
+            Edit Description
+          </button>
+        }
+      } @else {
+        @if (error()) {
+          <p class="error-message">{{ error() }}</p>
+        }
+        <form [formGroup]="form" class="edit-form">
+          <mat-form-field class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              formControlName="description"
+              rows="3"
+              placeholder="e.g., PvP build, Max magic resist..."
+            ></textarea>
+            <mat-hint align="end">{{ form.value.description?.length ?? 0 }}/500</mat-hint>
+          </mat-form-field>
+          <div class="edit-actions">
+            <button mat-button (click)="cancelEditing()" [disabled]="saving()">Cancel</button>
+            <button mat-flat-button (click)="save()" [disabled]="saving()">
+              @if (saving()) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                Save
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</div>

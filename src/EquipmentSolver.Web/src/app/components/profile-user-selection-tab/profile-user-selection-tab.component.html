@@ -1,0 +1,73 @@
+@if (error()) {
+  <p class="error-message">{{ error() }}</p>
+}
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else {
+  <div class="selection-header">
+    <span class="selection-count">
+      {{ enabledCount() }} / {{ equipment.length }} items enabled
+    </span>
+    <div class="bulk-actions">
+      <button mat-button (click)="enableAll()">
+        <mat-icon>check_box</mat-icon>
+        Enable All
+      </button>
+      <button mat-button (click)="disableAll()">
+        <mat-icon>check_box_outline_blank</mat-icon>
+        Disable All
+      </button>
+    </div>
+  </div>
+
+  @if (slots.length > 0) {
+    <div class="slots-section">
+      <h3>Slots</h3>
+      <p class="section-hint">Disable slots to exclude them from the solver entirely.</p>
+      <div class="slot-toggles">
+        @for (slot of slots; track slot.id) {
+          <div class="slot-toggle">
+            <mat-slide-toggle
+              [checked]="isSlotEnabled(slot.id)"
+              (change)="toggleSlot(slot.id)"
+            >
+              {{ slot.name }}
+            </mat-slide-toggle>
+          </div>
+        }
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+  }
+
+  <div class="equipment-section">
+    <h3>Equipment</h3>
+    <p class="section-hint">Toggle equipment you own or want the solver to consider.</p>
+
+    @if (equipment.length === 0) {
+      <p class="empty-hint">No equipment in this profile yet.</p>
+    } @else {
+      <div class="equipment-list">
+        @for (item of equipment; track item.id) {
+          <div class="equipment-item" [class.disabled]="!isEquipmentEnabled(item.id)">
+            <mat-slide-toggle
+              [checked]="isEquipmentEnabled(item.id)"
+              (change)="toggleEquipment(item.id)"
+            >
+              <span class="item-name">{{ item.name }}</span>
+            </mat-slide-toggle>
+            <span class="item-meta">
+              @for (stat of item.stats; track stat.statTypeId; let last = $last) {
+                {{ getStatDisplay(stat) }}{{ last ? '' : ', ' }}
+              }
+            </span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

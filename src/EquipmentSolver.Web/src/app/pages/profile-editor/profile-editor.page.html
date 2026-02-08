@@ -1,0 +1,93 @@
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <p class="error-message">{{ error() }}</p>
+    <button mat-flat-button (click)="loadProfile()">Retry</button>
+    <button mat-button (click)="goBack()">Back to Dashboard</button>
+  </div>
+} @else if (profile(); as p) {
+  <div class="profile-header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="profile-header-info">
+      <h1>{{ p.gameName }}</h1>
+      <span class="version-badge">v{{ p.version }}</span>
+      @if (!p.isOwner) {
+        <span class="owner-badge">by {{ p.ownerName }}</span>
+      }
+    </div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="General">
+      <div class="tab-content">
+        <app-profile-general-tab
+          [profile]="p"
+          [isOwner]="isOwner()"
+          (profileUpdated)="onProfileUpdated()"
+        />
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Slots ({{ slots().length }})">
+      <div class="tab-content">
+        <app-profile-slots-tab
+          [profileId]="profileId"
+          [slots]="slots()"
+          [isOwner]="isOwner()"
+          (slotsChanged)="onSlotsChanged($event)"
+        />
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Stat Types ({{ statTypes().length }})">
+      <div class="tab-content">
+        <app-profile-stat-types-tab
+          [profileId]="profileId"
+          [statTypes]="statTypes()"
+          [isOwner]="isOwner()"
+          (statTypesChanged)="onStatTypesChanged($event)"
+        />
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Equipment ({{ equipment().length }})">
+      <div class="tab-content">
+        <app-profile-equipment-tab
+          [profileId]="profileId"
+          [equipment]="equipment()"
+          [slots]="slots()"
+          [statTypes]="statTypes()"
+          [isOwner]="isOwner()"
+          (equipmentChanged)="onEquipmentChanged($event)"
+        />
+      </div>
+    </mat-tab>
+
+    <mat-tab label="My Selection">
+      <div class="tab-content">
+        <app-profile-user-selection-tab
+          [profileId]="profileId"
+          [equipment]="equipment()"
+          [slots]="slots()"
+          [statTypes]="statTypes()"
+        />
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Patch Notes">
+      <div class="tab-content">
+        <app-profile-patch-notes-tab
+          [profileId]="profileId"
+          [currentVersion]="p.version"
+          [isOwner]="isOwner()"
+          (versionBumped)="onProfileUpdated()"
+        />
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+}

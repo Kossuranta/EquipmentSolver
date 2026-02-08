@@ -1,0 +1,79 @@
+.error-message {
+  color: var(--mat-sys-error);
+  margin-bottom: 16px;
+}
+
+.add-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.current-version {
+  opacity: 0.6;
+  font-size: 14px;
+}
+
+.form-card {
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 0 0 16px 0;
+  }
+}
+
+.version-inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.version-field {
+  width: 80px;
+}
+
+.version-dot {
+  font-size: 24px;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.empty-hint {
+  opacity: 0.5;
+  font-style: italic;
+  margin-top: 16px;
+}
+
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.note-version {
+  font-weight: 600;
+}
+
+.note-content {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}

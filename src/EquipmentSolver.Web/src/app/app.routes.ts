@@ -23,6 +23,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage),
   },
   {
+    path: 'profiles/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/profile-editor/profile-editor.page').then(m => m.ProfileEditorPage),
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
   },

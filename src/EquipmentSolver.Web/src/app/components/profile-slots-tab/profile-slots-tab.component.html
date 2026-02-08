@@ -1,0 +1,62 @@
+@if (error()) {
+  <p class="error-message">{{ error() }}</p>
+}
+
+@if (isOwner) {
+  <div class="add-row">
+    <mat-form-field>
+      <mat-label>New slot name</mat-label>
+      <input
+        matInput
+        [formControl]="newSlotName"
+        placeholder="e.g., Head, Chest, Ring 1..."
+        (keydown.enter)="addSlot()"
+      />
+    </mat-form-field>
+    <button mat-flat-button (click)="addSlot()" [disabled]="newSlotName.invalid">
+      <mat-icon>add</mat-icon>
+      Add Slot
+    </button>
+  </div>
+}
+
+@if (slots.length === 0) {
+  <p class="empty-hint">No slots defined yet. Add equipment slots like Head, Chest, Ring 1, etc.</p>
+} @else {
+  <div cdkDropList (cdkDropListDropped)="onDrop($event)" [cdkDropListDisabled]="!isOwner">
+    @for (slot of slots; track slot.id) {
+      <div class="slot-item" cdkDrag>
+        @if (isOwner) {
+          <mat-icon class="drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+        }
+
+        @if (editingSlotId() === slot.id) {
+          <mat-form-field class="edit-field">
+            <input
+              matInput
+              [formControl]="editSlotName"
+              (keydown.enter)="saveSlot(slot)"
+              (keydown.escape)="cancelEditing()"
+            />
+          </mat-form-field>
+          <button mat-icon-button (click)="saveSlot(slot)">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button (click)="cancelEditing()">
+            <mat-icon>close</mat-icon>
+          </button>
+        } @else {
+          <span class="slot-name">{{ slot.name }}</span>
+          @if (isOwner) {
+            <button mat-icon-button (click)="startEditing(slot)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteSlot(slot)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+        }
+      </div>
+    }
+  </div>
+}

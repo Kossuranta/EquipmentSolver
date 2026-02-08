@@ -1,0 +1,90 @@
+@if (error()) {
+  <p class="error-message">{{ error() }}</p>
+}
+
+@if (isOwner && !showForm()) {
+  <div class="add-row">
+    <button mat-flat-button (click)="openForm()">
+      <mat-icon>new_releases</mat-icon>
+      Publish Version Update
+    </button>
+    <span class="current-version">Current: v{{ currentVersion }}</span>
+  </div>
+}
+
+@if (showForm()) {
+  <mat-card class="form-card">
+    <mat-card-content>
+      <h3>Bump Version & Add Patch Note</h3>
+      <form [formGroup]="form">
+        <div class="version-inputs">
+          <mat-form-field class="version-field">
+            <mat-label>Major</mat-label>
+            <input matInput type="number" formControlName="major" min="0" max="999" />
+          </mat-form-field>
+          <span class="version-dot">.</span>
+          <mat-form-field class="version-field">
+            <mat-label>Minor</mat-label>
+            <input matInput type="number" formControlName="minor" min="0" max="999" />
+          </mat-form-field>
+          <span class="version-dot">.</span>
+          <mat-form-field class="version-field">
+            <mat-label>Patch</mat-label>
+            <input matInput type="number" formControlName="patch" min="0" max="999" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field class="full-width">
+          <mat-label>What changed?</mat-label>
+          <textarea
+            matInput
+            formControlName="content"
+            rows="4"
+            placeholder="Describe the changes in this version..."
+          ></textarea>
+          <mat-hint align="end">{{ form.value.content?.length ?? 0 }}/5000</mat-hint>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button (click)="cancelForm()" [disabled]="saving()">Cancel</button>
+          <button mat-flat-button (click)="save()" [disabled]="saving() || form.invalid">
+            @if (saving()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              Publish
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+}
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+} @else if (patchNotes().length === 0) {
+  <p class="empty-hint">No patch notes yet.</p>
+} @else {
+  <div class="notes-list">
+    @for (note of patchNotes(); track note.id) {
+      <mat-card class="note-card">
+        <mat-card-header>
+          <mat-card-title class="note-version">v{{ note.version }}</mat-card-title>
+          <mat-card-subtitle>{{ note.date | date: 'mediumDate' }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="note-content">{{ note.content }}</p>
+        </mat-card-content>
+        @if (isOwner) {
+          <mat-card-actions align="end">
+            <button mat-icon-button (click)="deleteNote(note)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-card-actions>
+        }
+      </mat-card>
+    }
+  </div>
+}

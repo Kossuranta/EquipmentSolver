@@ -1,0 +1,69 @@
+@if (error()) {
+  <p class="error-message">{{ error() }}</p>
+}
+
+@if (isOwner) {
+  <div class="add-row">
+    <button mat-flat-button (click)="openAddDialog()" [disabled]="slots.length === 0">
+      <mat-icon>add</mat-icon>
+      Add Equipment
+    </button>
+    @if (slots.length === 0) {
+      <span class="hint">Add slots first before creating equipment.</span>
+    }
+  </div>
+}
+
+@if (equipment.length === 0) {
+  <p class="empty-hint">No equipment added yet.</p>
+} @else {
+  <mat-accordion multi>
+    @for (item of equipment; track item.id) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ item.name }}</mat-panel-title>
+          <mat-panel-description>
+            {{ item.compatibleSlotIds.length }} slot(s) &middot; {{ item.stats.length }} stat(s)
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="equipment-detail">
+          <div class="detail-section">
+            <h4>Compatible Slots</h4>
+            <mat-chip-set>
+              @for (slotId of item.compatibleSlotIds; track slotId) {
+                <mat-chip>{{ getSlotName(slotId) }}</mat-chip>
+              }
+            </mat-chip-set>
+          </div>
+
+          @if (item.stats.length > 0) {
+            <div class="detail-section">
+              <h4>Stats</h4>
+              <div class="stats-list">
+                @for (stat of item.stats; track stat.statTypeId) {
+                  <div class="stat-row">
+                    <span class="stat-name">{{ getStatDisplay(stat) }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (isOwner) {
+            <div class="equipment-actions">
+              <button mat-button (click)="openEditDialog(item)">
+                <mat-icon>edit</mat-icon>
+                Edit
+              </button>
+              <button mat-button color="warn" (click)="deleteEquipment(item)">
+                <mat-icon>delete</mat-icon>
+                Delete
+              </button>
+            </div>
+          }
+        </div>
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+}

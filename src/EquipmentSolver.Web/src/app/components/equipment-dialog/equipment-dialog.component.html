@@ -1,0 +1,83 @@
+<h2 mat-dialog-title>{{ data.mode === 'create' ? 'Add Equipment' : 'Edit Equipment' }}</h2>
+
+<mat-dialog-content>
+  <mat-form-field class="full-width">
+    <mat-label>Equipment Name</mat-label>
+    <input matInput [formControl]="nameControl" placeholder="e.g., Dragon Helmet" />
+  </mat-form-field>
+
+  <div class="section">
+    <h3>Compatible Slots</h3>
+    <p class="section-hint">Select which slot(s) this equipment can be placed in.</p>
+    <div class="slot-checkboxes">
+      @for (slot of data.slots; track slot.id) {
+        <mat-checkbox
+          [checked]="isSlotSelected(slot.id)"
+          (change)="toggleSlot(slot.id)"
+        >
+          {{ slot.name }}
+        </mat-checkbox>
+      }
+    </div>
+    @if (selectedSlotIds().size === 0) {
+      <p class="validation-hint">Select at least one slot.</p>
+    }
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h3>Stats</h3>
+      <button
+        mat-button
+        (click)="addStat()"
+        [disabled]="availableStatTypes().length === 0"
+      >
+        <mat-icon>add</mat-icon>
+        Add Stat
+      </button>
+    </div>
+
+    @if (data.statTypes.length === 0) {
+      <p class="section-hint">No stat types defined for this profile. Add stat types first.</p>
+    } @else if (statEntries().length === 0) {
+      <p class="section-hint">No stats added. Click "Add Stat" to assign values.</p>
+    } @else {
+      <div class="stat-entries">
+        @for (entry of statEntries(); track $index; let i = $index) {
+          <div class="stat-entry">
+            <mat-form-field class="stat-select">
+              <mat-label>Stat</mat-label>
+              <mat-select
+                [value]="entry.statTypeId"
+                (selectionChange)="updateStatType(i, $event.value)"
+              >
+                @for (st of getStatTypeOptions(entry.statTypeId); track st.id) {
+                  <mat-option [value]="st.id">{{ st.displayName }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="stat-value">
+              <mat-label>Value</mat-label>
+              <input
+                matInput
+                type="number"
+                [value]="entry.value"
+                (input)="updateStatValue(i, +$any($event.target).value)"
+              />
+            </mat-form-field>
+            <button mat-icon-button (click)="removeStat(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button (click)="save()" [disabled]="!isValid()">
+    {{ data.mode === 'create' ? 'Add' : 'Save' }}
+  </button>
+</mat-dialog-actions>

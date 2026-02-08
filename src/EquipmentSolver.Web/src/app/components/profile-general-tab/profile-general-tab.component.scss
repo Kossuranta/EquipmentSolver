@@ -1,0 +1,58 @@
+.general-info {
+  max-width: 600px;
+}
+
+.info-row {
+  display: flex;
+  gap: 24px;
+}
+
+.game-cover-large {
+  width: 120px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.info-details {
+  flex: 1;
+
+  h2 {
+    margin: 0 0 4px 0;
+  }
+}
+
+.meta {
+  opacity: 0.6;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.description {
+  margin-bottom: 12px;
+}
+
+.no-description {
+  opacity: 0.4;
+  font-style: italic;
+}
+
+.error-message {
+  color: var(--mat-sys-error);
+  margin-bottom: 8px;
+}
+
+.edit-form {
+  margin-top: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
