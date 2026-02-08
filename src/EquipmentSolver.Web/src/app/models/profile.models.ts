@@ -1,5 +1,6 @@
 export interface ProfileResponse {
   id: number;
+  name: string;
   gameName: string;
   igdbGameId: number;
   gameCoverUrl: string | null;
@@ -19,6 +20,7 @@ export interface ProfileResponse {
 
 export interface ProfileDetailResponse {
   id: number;
+  name: string;
   gameName: string;
   igdbGameId: number;
   gameCoverUrl: string | null;
@@ -61,6 +63,7 @@ export interface EquipmentStatDto {
 }
 
 export interface CreateProfileRequest {
+  name: string;
   gameName: string;
   igdbGameId: number;
   gameCoverUrl: string | null;
@@ -68,6 +71,7 @@ export interface CreateProfileRequest {
 }
 
 export interface UpdateProfileRequest {
+  name: string;
   gameName: string;
   igdbGameId: number;
   gameCoverUrl: string | null;
@@ -139,4 +143,92 @@ export interface GameSearchResult {
   igdbId: number;
   name: string;
   coverUrl: string | null;
+}
+
+// --- Solver ---
+
+export interface SolveRequest {
+  constraints: SolveConstraintInput[];
+  priorities: SolvePriorityInput[];
+  topN: number;
+}
+
+export interface SolveConstraintInput {
+  statTypeId: number;
+  operator: string;
+  value: number;
+}
+
+export interface SolvePriorityInput {
+  statTypeId: number;
+  weight: number;
+}
+
+export interface SolveResponse {
+  results: SolveResultDto[];
+  timedOut: boolean;
+  elapsedMs: number;
+  combinationsEvaluated: number;
+}
+
+export interface SolveResultDto {
+  rank: number;
+  score: number;
+  statTotals: StatTotalDto[];
+  assignments: SlotAssignmentDto[];
+}
+
+export interface StatTotalDto {
+  statTypeId: number;
+  statName: string;
+  statDisplayName: string;
+  value: number;
+}
+
+export interface SlotAssignmentDto {
+  slotId: number;
+  slotName: string;
+  equipmentId: number | null;
+  equipmentName: string | null;
+  stats: ItemStatDto[];
+}
+
+export interface ItemStatDto {
+  statTypeId: number;
+  statDisplayName: string;
+  value: number;
+}
+
+// --- Solver Presets ---
+
+export interface PresetResponse {
+  id: number;
+  name: string;
+  constraints: PresetConstraintDto[];
+  priorities: PresetPriorityDto[];
+}
+
+export interface PresetConstraintDto {
+  id: number;
+  statTypeId: number;
+  operator: string;
+  value: number;
+}
+
+export interface PresetPriorityDto {
+  id: number;
+  statTypeId: number;
+  weight: number;
+}
+
+export interface CreatePresetRequest {
+  name: string;
+  constraints: SolveConstraintInput[];
+  priorities: SolvePriorityInput[];
+}
+
+export interface UpdatePresetRequest {
+  name: string;
+  constraints: SolveConstraintInput[];
+  priorities: SolvePriorityInput[];
 }

@@ -21,6 +21,11 @@ import {
   CreatePatchNoteRequest,
   UserEquipmentStateResponse,
   UserSlotStateResponse,
+  SolveRequest,
+  SolveResponse,
+  PresetResponse,
+  CreatePresetRequest,
+  UpdatePresetRequest,
 } from '../models/profile.models';
 
 @Injectable({ providedIn: 'root' })
@@ -175,5 +180,40 @@ export class ProfileService {
       slotId,
       isEnabled,
     });
+  }
+
+  // --- Solver ---
+
+  solve(profileId: number, request: SolveRequest): Observable<SolveResponse> {
+    return this.http.post<SolveResponse>(`${this.apiUrl}/${profileId}/solver/solve`, request);
+  }
+
+  // --- Solver Presets ---
+
+  getPresets(profileId: number): Observable<PresetResponse[]> {
+    return this.http.get<PresetResponse[]>(`${this.apiUrl}/${profileId}/solver/presets`);
+  }
+
+  getPreset(profileId: number, presetId: number): Observable<PresetResponse> {
+    return this.http.get<PresetResponse>(`${this.apiUrl}/${profileId}/solver/presets/${presetId}`);
+  }
+
+  createPreset(profileId: number, request: CreatePresetRequest): Observable<PresetResponse> {
+    return this.http.post<PresetResponse>(`${this.apiUrl}/${profileId}/solver/presets`, request);
+  }
+
+  updatePreset(
+    profileId: number,
+    presetId: number,
+    request: UpdatePresetRequest,
+  ): Observable<PresetResponse> {
+    return this.http.put<PresetResponse>(
+      `${this.apiUrl}/${profileId}/solver/presets/${presetId}`,
+      request,
+    );
+  }
+
+  deletePreset(profileId: number, presetId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${profileId}/solver/presets/${presetId}`);
   }
 }

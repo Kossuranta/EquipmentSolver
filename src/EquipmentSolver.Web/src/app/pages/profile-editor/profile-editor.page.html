@@ -14,7 +14,8 @@
       <mat-icon>arrow_back</mat-icon>
     </button>
     <div class="profile-header-info">
-      <h1>{{ p.gameName }}</h1>
+      <h1>{{ p.name }}</h1>
+      <span class="game-badge">{{ p.gameName }}</span>
       <span class="version-badge">v{{ p.version }}</span>
       @if (!p.isOwner) {
         <span class="owner-badge">by {{ p.ownerName }}</span>
@@ -75,6 +76,16 @@
           [equipment]="equipment()"
           [slots]="slots()"
           [statTypes]="statTypes()"
+        />
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Solver">
+      <div class="tab-content">
+        <app-profile-solver-tab
+          [profileId]="profileId"
+          [statTypes]="statTypes()"
+          [isOwner]="isOwner()"
         />
       </div>
     </mat-tab>

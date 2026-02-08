@@ -1,0 +1,283 @@
+<!-- Presets Section -->
+<div class="presets-bar">
+  <div class="presets-left">
+    @if (isOwner) {
+      <button mat-button [matMenuTriggerFor]="presetMenu">
+        <mat-icon>bookmark</mat-icon>
+        {{ selectedPresetId() ? presetName() : 'Presets' }}
+      </button>
+      <mat-menu #presetMenu="matMenu">
+        <button mat-menu-item (click)="newPreset()">
+          <mat-icon>add</mat-icon>
+          <span>New preset</span>
+        </button>
+        @if (presets().length > 0) {
+          <mat-divider></mat-divider>
+          @for (preset of presets(); track preset.id) {
+            <button mat-menu-item (click)="loadPreset(preset)">
+              <mat-icon>{{ selectedPresetId() === preset.id ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+              <span>{{ preset.name }}</span>
+            </button>
+          }
+        }
+      </mat-menu>
+    }
+  </div>
+
+  @if (isOwner && selectedPresetId() !== null) {
+    <div class="presets-right">
+      <mat-form-field class="preset-name-field" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Preset name</mat-label>
+        <input matInput [ngModel]="presetName()" (ngModelChange)="presetName.set($event)" />
+      </mat-form-field>
+      <button mat-flat-button (click)="savePreset()" [disabled]="!presetName().trim()">
+        Save
+      </button>
+      <button mat-icon-button color="warn" (click)="deletePreset(selectedPresetId()!)" matTooltip="Delete preset">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  }
+
+  @if (isOwner && selectedPresetId() === null) {
+    <div class="presets-right">
+      <mat-form-field class="preset-name-field" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Preset name</mat-label>
+        <input matInput [ngModel]="presetName()" (ngModelChange)="presetName.set($event)" />
+      </mat-form-field>
+      <button mat-stroked-button (click)="savePreset()" [disabled]="!presetName().trim() || !canSolve()">
+        Save as preset
+      </button>
+    </div>
+  }
+</div>
+
+@if (presetError()) {
+  <p class="error-message">{{ presetError() }}</p>
+}
+
+<mat-divider></mat-divider>
+
+<!-- Priorities Section -->
+<div class="section">
+  <div class="section-header">
+    <h3>Priorities</h3>
+    <button mat-button (click)="addPriority()" [disabled]="priorities().length >= statTypes.length">
+      <mat-icon>add</mat-icon>
+      Add Priority
+    </button>
+  </div>
+  <p class="section-hint">
+    Set which stats to optimize. Positive weight = maximize, negative = minimize.
+  </p>
+
+  @if (priorities().length === 0) {
+    <p class="empty-hint">Add at least one priority to run the solver.</p>
+  }
+
+  <div class="rows-list">
+    @for (row of priorities(); track $index; let i = $index) {
+      <div class="config-row">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="stat-field">
+          <mat-label>Stat</mat-label>
+          <mat-select
+            [value]="row.statTypeId"
+            (selectionChange)="updatePriority(i, 'statTypeId', $event.value)"
+          >
+            @for (st of availableStatsForPriority(i); track st.id) {
+              <mat-option [value]="st.id">{{ st.displayName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="weight-field">
+          <mat-label>Weight</mat-label>
+          <input
+            matInput
+            type="number"
+            step="0.1"
+            [ngModel]="row.weight"
+            (ngModelChange)="updatePriority(i, 'weight', $event)"
+          />
+        </mat-form-field>
+
+        <button mat-icon-button (click)="removePriority(i)" matTooltip="Remove priority">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+<mat-divider></mat-divider>
+
+<!-- Constraints Section -->
+<div class="section">
+  <div class="section-header">
+    <h3>Constraints</h3>
+    <button mat-button (click)="addConstraint()" [disabled]="constraints().length >= statTypes.length">
+      <mat-icon>add</mat-icon>
+      Add Constraint
+    </button>
+  </div>
+  <p class="section-hint">
+    Set hard limits the solver must satisfy (e.g. weight &lt;= 70).
+  </p>
+
+  @if (constraints().length === 0) {
+    <p class="empty-hint">No constraints — solver will optimize without limits.</p>
+  }
+
+  <div class="rows-list">
+    @for (row of constraints(); track $index; let i = $index) {
+      <div class="config-row">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="stat-field">
+          <mat-label>Stat</mat-label>
+          <mat-select
+            [value]="row.statTypeId"
+            (selectionChange)="updateConstraint(i, 'statTypeId', $event.value)"
+          >
+            @for (st of availableStatsForConstraint(i); track st.id) {
+              <mat-option [value]="st.id">{{ st.displayName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="operator-field">
+          <mat-label>Op</mat-label>
+          <mat-select
+            [value]="row.operator"
+            (selectionChange)="updateConstraint(i, 'operator', $event.value)"
+          >
+            @for (op of operators; track op) {
+              <mat-option [value]="op">{{ op }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="value-field">
+          <mat-label>Value</mat-label>
+          <input
+            matInput
+            type="number"
+            [ngModel]="row.value"
+            (ngModelChange)="updateConstraint(i, 'value', $event)"
+          />
+        </mat-form-field>
+
+        <button mat-icon-button (click)="removeConstraint(i)" matTooltip="Remove constraint">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+<mat-divider></mat-divider>
+
+<!-- Solve Controls -->
+<div class="solve-controls">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="topn-field">
+    <mat-label>Top N</mat-label>
+    <input matInput type="number" min="1" max="20" [ngModel]="topN()" (ngModelChange)="topN.set($event)" />
+  </mat-form-field>
+
+  @if (solving()) {
+    <button mat-flat-button color="primary" disabled class="solve-button">
+      <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
+      Solving...
+    </button>
+  } @else {
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="solve()"
+      [disabled]="!canSolve()"
+      class="solve-button"
+    >
+      <mat-icon>play_arrow</mat-icon>
+      Solve
+    </button>
+  }
+</div>
+
+@if (solveError()) {
+  <p class="error-message">{{ solveError() }}</p>
+}
+
+<!-- Results -->
+@if (solveResponse(); as resp) {
+  <div class="results-section">
+    <div class="results-header">
+      <h3>Results</h3>
+      <div class="results-meta">
+        <mat-chip-set>
+          <mat-chip>{{ resp.results.length }} loadout{{ resp.results.length === 1 ? '' : 's' }}</mat-chip>
+          <mat-chip>{{ formatElapsed(resp.elapsedMs) }}</mat-chip>
+          @if (resp.timedOut) {
+            <mat-chip class="timeout-chip" highlighted>Timed out</mat-chip>
+          }
+        </mat-chip-set>
+      </div>
+    </div>
+
+    @if (resp.results.length === 0) {
+      <p class="empty-hint">No valid loadouts found. Try relaxing your constraints.</p>
+    } @else {
+      <mat-accordion multi>
+        @for (result of resp.results; track result.rank) {
+          <mat-expansion-panel [expanded]="result.rank === 1">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <span class="rank-badge">#{{ result.rank }}</span>
+                <span class="score-label">Score: {{ result.score }}</span>
+              </mat-panel-title>
+              <mat-panel-description>
+                @for (st of result.statTotals; track st.statTypeId; let last = $last) {
+                  {{ st.statDisplayName }}: {{ st.value }}{{ last ? '' : ' · ' }}
+                }
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <!-- Stat Totals -->
+            <div class="result-stat-totals">
+              <h4>Stat Totals</h4>
+              <div class="stat-chips">
+                @for (st of result.statTotals; track st.statTypeId) {
+                  <div class="stat-chip">
+                    <span class="stat-label">{{ st.statDisplayName }}</span>
+                    <span class="stat-value">{{ st.value }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Slot Assignments -->
+            <div class="result-assignments">
+              <h4>Equipment</h4>
+              <div class="assignment-list">
+                @for (slot of result.assignments; track slot.slotId) {
+                  <div class="assignment-row" [class.empty-slot]="!slot.equipmentId">
+                    <span class="slot-name">{{ slot.slotName }}</span>
+                    <span class="equip-name">
+                      @if (slot.equipmentName) {
+                        {{ slot.equipmentName }}
+                      } @else {
+                        <em>Empty</em>
+                      }
+                    </span>
+                    <span class="equip-stats">
+                      @for (stat of slot.stats; track stat.statTypeId; let last = $last) {
+                        {{ stat.statDisplayName }}: {{ stat.value }}{{ last ? '' : ', ' }}
+                      }
+                    </span>
+                  </div>
+                }
+              </div>
+            </div>
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    }
+  </div>
+}

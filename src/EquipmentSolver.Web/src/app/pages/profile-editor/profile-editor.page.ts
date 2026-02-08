@@ -17,6 +17,7 @@ import { ProfileStatTypesTabComponent } from '../../components/profile-stat-type
 import { ProfileEquipmentTabComponent } from '../../components/profile-equipment-tab/profile-equipment-tab.component';
 import { ProfilePatchNotesTabComponent } from '../../components/profile-patch-notes-tab/profile-patch-notes-tab.component';
 import { ProfileUserSelectionTabComponent } from '../../components/profile-user-selection-tab/profile-user-selection-tab.component';
+import { ProfileSolverTabComponent } from '../../components/profile-solver-tab/profile-solver-tab.component';
 
 @Component({
   selector: 'app-profile-editor',
@@ -31,6 +32,7 @@ import { ProfileUserSelectionTabComponent } from '../../components/profile-user-
     ProfileEquipmentTabComponent,
     ProfilePatchNotesTabComponent,
     ProfileUserSelectionTabComponent,
+    ProfileSolverTabComponent,
   ],
   templateUrl: './profile-editor.page.html',
   styleUrl: './profile-editor.page.scss',

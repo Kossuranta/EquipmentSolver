@@ -1,0 +1,224 @@
+.error-message {
+  color: var(--mat-sys-error);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+// --- Presets Bar ---
+
+.presets-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.presets-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preset-name-field {
+  width: 200px;
+}
+
+// --- Sections ---
+
+.section {
+  margin: 16px 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.section-hint {
+  font-size: 13px;
+  opacity: 0.6;
+  margin: 4px 0 12px 0;
+}
+
+.empty-hint {
+  opacity: 0.5;
+  font-style: italic;
+  font-size: 14px;
+}
+
+// --- Config Rows (Constraints / Priorities) ---
+
+.rows-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.config-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-field {
+  flex: 2;
+  min-width: 140px;
+}
+
+.operator-field {
+  width: 80px;
+  flex: 0 0 auto;
+}
+
+.weight-field,
+.value-field {
+  width: 100px;
+  flex: 0 0 auto;
+}
+
+// --- Solve Controls ---
+
+mat-divider {
+  margin: 16px 0;
+}
+
+.solve-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.topn-field {
+  width: 80px;
+}
+
+.solve-button {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inline-spinner {
+  display: inline-block;
+}
+
+// --- Results ---
+
+.results-section {
+  margin-top: 16px;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.results-meta {
+  display: flex;
+  gap: 8px;
+}
+
+.timeout-chip {
+  --mat-chip-label-text-color: var(--mat-sys-error);
+}
+
+.rank-badge {
+  font-weight: 700;
+  margin-right: 12px;
+  font-size: 16px;
+}
+
+.score-label {
+  font-weight: 500;
+}
+
+// Stat totals inside a result
+.result-stat-totals,
+.result-assignments {
+  margin-top: 12px;
+
+  h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+.stat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stat-chip {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 13px;
+  display: flex;
+  gap: 6px;
+
+  .stat-label {
+    font-weight: 500;
+  }
+
+  .stat-value {
+    opacity: 0.8;
+  }
+}
+
+// Slot assignments inside a result
+.assignment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.assignment-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  &.empty-slot {
+    opacity: 0.5;
+  }
+}
+
+.slot-name {
+  font-weight: 500;
+  font-size: 13px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.equip-name {
+  font-weight: 500;
+}
+
+.equip-stats {
+  font-size: 13px;
+  opacity: 0.6;
+  text-align: right;
+}
