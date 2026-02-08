@@ -6,8 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
 import { ProfileService } from '../../services/profile.service';
 import { PatchNoteResponse } from '../../models/profile.models';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/confirm-dialog.component';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -44,7 +46,10 @@ export class ProfilePatchNotesTabComponent implements OnInit {
     content: new FormControl('', [Validators.required, Validators.maxLength(5000)]),
   });
 
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.loadPatchNotes();
@@ -107,13 +112,24 @@ export class ProfilePatchNotesTabComponent implements OnInit {
   }
 
   deleteNote(note: PatchNoteResponse): void {
-    if (!confirm('Delete this patch note?')) return;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '380px',
+      data: {
+        title: 'Delete Patch Note',
+        message: 'Delete this patch note?',
+        confirmText: 'Delete',
+        warn: true,
+      } satisfies ConfirmDialogData,
+    });
 
-    this.profileService.deletePatchNote(this.profileId, note.id).subscribe({
-      next: () => {
-        this.patchNotes.update(notes => notes.filter(n => n.id !== note.id));
-      },
-      error: () => this.error.set('Failed to delete patch note.'),
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.profileService.deletePatchNote(this.profileId, note.id).subscribe({
+        next: () => {
+          this.patchNotes.update(notes => notes.filter(n => n.id !== note.id));
+        },
+        error: () => this.error.set('Failed to delete patch note.'),
+      });
     });
   }
 }

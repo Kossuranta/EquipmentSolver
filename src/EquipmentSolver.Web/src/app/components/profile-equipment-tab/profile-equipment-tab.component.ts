@@ -16,6 +16,7 @@ import {
   StatTypeDto,
 } from '../../models/profile.models';
 import { EquipmentDialogComponent, EquipmentDialogData } from '../equipment-dialog/equipment-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-profile-equipment-tab',
@@ -117,12 +118,23 @@ export class ProfileEquipmentTabComponent {
   }
 
   deleteEquipment(item: EquipmentDto): void {
-    if (!confirm(`Delete "${item.name}"?`)) return;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '380px',
+      data: {
+        title: 'Delete Equipment',
+        message: `Delete "${item.name}"?`,
+        confirmText: 'Delete',
+        warn: true,
+      } satisfies ConfirmDialogData,
+    });
 
-    this.error.set(null);
-    this.profileService.deleteEquipment(this.profileId, item.id).subscribe({
-      next: () => this.equipmentChanged.emit(this.equipment.filter(e => e.id !== item.id)),
-      error: () => this.error.set('Failed to delete equipment.'),
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.error.set(null);
+      this.profileService.deleteEquipment(this.profileId, item.id).subscribe({
+        next: () => this.equipmentChanged.emit(this.equipment.filter(e => e.id !== item.id)),
+        error: () => this.error.set('Failed to delete equipment.'),
+      });
     });
   }
 

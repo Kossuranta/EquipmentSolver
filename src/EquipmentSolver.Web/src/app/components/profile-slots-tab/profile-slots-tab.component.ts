@@ -6,8 +6,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatDialog } from '@angular/material/dialog';
 import { ProfileService } from '../../services/profile.service';
 import { SlotDto } from '../../models/profile.models';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-profile-slots-tab',
@@ -73,15 +75,25 @@ export class ProfileSlotsTabComponent {
   }
 
   deleteSlot(slot: SlotDto): void {
-    if (!confirm(`Delete slot "${slot.name}"? Equipment assigned to this slot will lose this assignment.`))
-      return;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        title: 'Delete Slot',
+        message: `Delete slot "${slot.name}"? Equipment assigned to this slot will lose this assignment.`,
+        confirmText: 'Delete',
+        warn: true,
+      } satisfies ConfirmDialogData,
+    });
 
-    this.error.set(null);
-    this.profileService.deleteSlot(this.profileId, slot.id).subscribe({
-      next: () => {
-        this.slotsChanged.emit(this.slots.filter(s => s.id !== slot.id));
-      },
-      error: () => this.error.set('Failed to delete slot.'),
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.error.set(null);
+      this.profileService.deleteSlot(this.profileId, slot.id).subscribe({
+        next: () => {
+          this.slotsChanged.emit(this.slots.filter(s => s.id !== slot.id));
+        },
+        error: () => this.error.set('Failed to delete slot.'),
+      });
     });
   }
 
@@ -103,5 +115,8 @@ export class ProfileSlotsTabComponent {
     });
   }
 
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly dialog: MatDialog,
+  ) {}
 }

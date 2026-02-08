@@ -5,8 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 import { ProfileService } from '../../services/profile.service';
 import { BrowseService } from '../../services/browse.service';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog.component';
 import {
   ProfileDetailResponse,
   SlotDto,
@@ -56,6 +58,7 @@ export class ProfileEditorPage implements OnInit {
     private readonly router: Router,
     private readonly profileService: ProfileService,
     private readonly browseService: BrowseService,
+    private readonly dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -108,11 +111,21 @@ export class ProfileEditorPage implements OnInit {
   }
 
   stopUsing(): void {
-    if (!confirm(`Stop using "${this.profile()?.name}"?`)) return;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '380px',
+      data: {
+        title: 'Stop Using Profile',
+        message: `Stop using "${this.profile()?.name}"?`,
+        confirmText: 'Stop Using',
+      } satisfies ConfirmDialogData,
+    });
 
-    this.browseService.stopUsing(this.profileId).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
-      error: () => this.error.set('Failed to stop using profile.'),
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.browseService.stopUsing(this.profileId).subscribe({
+        next: () => this.router.navigate(['/dashboard']),
+        error: () => this.error.set('Failed to stop using profile.'),
+      });
     });
   }
 }

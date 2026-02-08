@@ -176,6 +176,7 @@ Angular application with Angular Material.
 | Directory | Purpose |
 |-----------|---------|
 | `components/create-profile-dialog/` | Dialog: create profile with IGDB game search |
+| `components/confirm-dialog/` | Reusable Material confirm dialog (replaces native `window.confirm`) |
 | `components/equipment-dialog/` | Dialog: create/edit equipment (slot checkboxes, stat picker) |
 | `components/profile-general-tab/` | General settings tab (name, game, description, visibility) |
 | `components/profile-slots-tab/` | Slots tab with drag-and-drop reordering |

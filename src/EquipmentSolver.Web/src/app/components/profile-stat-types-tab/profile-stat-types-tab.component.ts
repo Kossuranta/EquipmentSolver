@@ -5,8 +5,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 import { ProfileService } from '../../services/profile.service';
 import { StatTypeDto } from '../../models/profile.models';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-profile-stat-types-tab',
@@ -84,21 +86,30 @@ export class ProfileStatTypesTabComponent {
   }
 
   deleteStatType(st: StatTypeDto): void {
-    if (
-      !confirm(
-        `Delete stat type "${st.displayName}"? This will remove it from all equipment and solver presets.`,
-      )
-    )
-      return;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        title: 'Delete Stat Type',
+        message: `Delete stat type "${st.displayName}"? This will remove it from all equipment and solver presets.`,
+        confirmText: 'Delete',
+        warn: true,
+      } satisfies ConfirmDialogData,
+    });
 
-    this.error.set(null);
-    this.profileService.deleteStatType(this.profileId, st.id).subscribe({
-      next: () => {
-        this.statTypesChanged.emit(this.statTypes.filter(s => s.id !== st.id));
-      },
-      error: () => this.error.set('Failed to delete stat type.'),
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.error.set(null);
+      this.profileService.deleteStatType(this.profileId, st.id).subscribe({
+        next: () => {
+          this.statTypesChanged.emit(this.statTypes.filter(s => s.id !== st.id));
+        },
+        error: () => this.error.set('Failed to delete stat type.'),
+      });
     });
   }
 
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly dialog: MatDialog,
+  ) {}
 }

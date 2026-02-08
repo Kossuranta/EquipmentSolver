@@ -12,6 +12,7 @@ import { ProfileService } from '../../services/profile.service';
 import { BrowseService } from '../../services/browse.service';
 import { ProfileResponse } from '../../models/profile.models';
 import { CreateProfileDialogComponent } from '../../components/create-profile-dialog/create-profile-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog.component';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -78,21 +79,44 @@ export class DashboardPage implements OnInit {
 
   deleteProfile(event: Event, profile: ProfileResponse): void {
     event.stopPropagation();
-    if (!confirm(`Delete profile "${profile.name}"? This cannot be undone.`)) return;
 
-    this.profileService.deleteProfile(profile.id).subscribe({
-      next: () => this.loadProfiles(),
-      error: () => this.error.set('Failed to delete profile.'),
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Profile',
+        message: `Delete profile "${profile.name}"? This cannot be undone.`,
+        confirmText: 'Delete',
+        warn: true,
+      } satisfies ConfirmDialogData,
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.profileService.deleteProfile(profile.id).subscribe({
+        next: () => this.loadProfiles(),
+        error: () => this.error.set('Failed to delete profile.'),
+      });
     });
   }
 
   stopUsing(event: Event, profile: ProfileResponse): void {
     event.stopPropagation();
-    if (!confirm(`Stop using "${profile.name}" by ${profile.ownerName}?`)) return;
 
-    this.browseService.stopUsing(profile.id).subscribe({
-      next: () => this.loadProfiles(),
-      error: () => this.error.set('Failed to stop using profile.'),
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '380px',
+      data: {
+        title: 'Stop Using Profile',
+        message: `Stop using "${profile.name}" by ${profile.ownerName}?`,
+        confirmText: 'Stop Using',
+      } satisfies ConfirmDialogData,
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.browseService.stopUsing(profile.id).subscribe({
+        next: () => this.loadProfiles(),
+        error: () => this.error.set('Failed to stop using profile.'),
+      });
     });
   }
 }
