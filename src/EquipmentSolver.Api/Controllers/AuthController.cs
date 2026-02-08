@@ -4,11 +4,13 @@ using EquipmentSolver.Api.DTOs.Auth;
 using EquipmentSolver.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EquipmentSolver.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
+[EnableRateLimiting("auth")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;

@@ -7,6 +7,7 @@ using EquipmentSolver.Core.Solver;
 using EquipmentSolver.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentSolver.Api.Controllers;
@@ -14,6 +15,7 @@ namespace EquipmentSolver.Api.Controllers;
 [ApiController]
 [Route("api/v1/profiles/{profileId:int}/solver")]
 [Authorize]
+[EnableRateLimiting("api")]
 public class SolverController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -33,6 +35,7 @@ public class SolverController : ControllerBase
     /// Run the solver to find optimal equipment loadouts.
     /// </summary>
     [HttpPost("solve")]
+    [EnableRateLimiting("solver")]
     [ProducesResponseType(typeof(SolveResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -5,12 +5,14 @@ using EquipmentSolver.Api.DTOs.Social;
 using EquipmentSolver.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EquipmentSolver.Api.Controllers;
 
 [ApiController]
 [Route("api/v1")]
 [Authorize]
+[EnableRateLimiting("api")]
 public class SocialController : ControllerBase
 {
     private readonly ISocialService _socialService;

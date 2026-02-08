@@ -1,8 +1,12 @@
 using System.Text;
+using System.Threading.RateLimiting;
+using EquipmentSolver.Api.DTOs;
+using EquipmentSolver.Api.Middleware;
 using EquipmentSolver.Core.Models;
 using EquipmentSolver.Infrastructure;
 using EquipmentSolver.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -47,8 +51,71 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// --- Rate Limiting ---
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsJsonAsync(
+            new ErrorResponse("Too many requests. Please try again later."), cancellationToken);
+    };
+
+    // Strict limit for auth endpoints (login, register)
+    options.AddPolicy("auth", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+
+    // General API limit per user/IP
+    options.AddPolicy("api", httpContext =>
+    {
+        var userId = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var key = userId ?? httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(key, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 120,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+
+    // Strict limit for solver (computationally expensive)
+    options.AddPolicy("solver", httpContext =>
+    {
+        var userId = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var key = userId ?? httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(key, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+});
+
 // --- Controllers + OpenAPI ---
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // Return validation errors in the same ErrorResponse format
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .SelectMany(e => e.Value!.Errors.Select(err =>
+                    string.IsNullOrEmpty(err.ErrorMessage) ? "Invalid value." : err.ErrorMessage))
+                .ToList();
+
+            return new BadRequestObjectResult(new ErrorResponse([.. errors]));
+        };
+    });
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -61,6 +128,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // --- Middleware pipeline ---
+app.UseMiddleware<GlobalExceptionHandler>();
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
@@ -72,6 +140,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapControllers();
 

@@ -4,12 +4,14 @@ using EquipmentSolver.Api.DTOs.Profiles;
 using EquipmentSolver.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EquipmentSolver.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
 [Authorize]
+[EnableRateLimiting("api")]
 public class ProfilesController : ControllerBase
 {
     private readonly IGameProfileService _profileService;

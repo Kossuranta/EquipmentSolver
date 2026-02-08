@@ -3,12 +3,14 @@ using EquipmentSolver.Core.Interfaces;
 using EquipmentSolver.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EquipmentSolver.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
 [Authorize]
+[EnableRateLimiting("api")]
 public class GamesController : ControllerBase
 {
     private readonly IIgdbService _igdbService;

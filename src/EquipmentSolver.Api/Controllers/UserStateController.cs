@@ -5,6 +5,7 @@ using EquipmentSolver.Core.Interfaces;
 using EquipmentSolver.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentSolver.Api.Controllers;
@@ -12,6 +13,7 @@ namespace EquipmentSolver.Api.Controllers;
 [ApiController]
 [Route("api/v1/profiles/{profileId:int}/user-state")]
 [Authorize]
+[EnableRateLimiting("api")]
 public class UserStateController : ControllerBase
 {
     private readonly AppDbContext _db;
