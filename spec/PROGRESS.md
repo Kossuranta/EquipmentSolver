@@ -48,9 +48,9 @@
 | Profile patch notes (API) | :white_check_mark: | PatchNotesController, version bump + patch note creation |
 | Profile patch notes (UI) | :white_check_mark: | Patch notes tab with version bump form (3 int inputs), history list |
 | Equipment slots management (API + UI) | :white_check_mark: | SlotsController with CRUD + reorder, drag-and-drop UI via CDK DragDrop |
-| Stat types management (API + UI) | :white_check_mark: | StatTypesController with CRUD, table UI with inline editing, auto-name generation |
+| Stat types management (API + UI) | :white_check_mark: | StatTypesController with CRUD, table UI with inline editing; DisplayName is sole name field with unique constraint per profile |
 | Equipment CRUD (API) | :white_check_mark: | EquipmentController with slot/stat validation, replace-on-update pattern |
-| Equipment editor UI | :white_check_mark: | Equipment dialog with slot checkboxes + stat picker (select applicable stats only) |
+| Equipment editor UI | :white_check_mark: | Equipment dialog with slot checkboxes + stat picker; duplicate button, header actions always visible, comma-to-dot decimal input |
 | Per-user equipment selection (API + UI) | :white_check_mark: | UserStateController, toggle items/slots, enable/disable all, optimistic UI updates |
 | Bulk import/export equipment | :white_large_square: | Deferred — nice-to-have |
 
@@ -127,11 +127,15 @@
 | 2026-02-07 | Per-user equipment selection | Toggle items on/off per user; persisted; survives owner edits; enable/disable all buttons |
 | 2026-02-07 | Profile versioning + patch notes | Free-form version string, patch notes history, no rollback; design for future export/import |
 | 2026-02-08 | IGDB stale-while-revalidate cache | Fresh for 24h, background-refresh 24–72h, expire after 72h; 3-day resilience if IGDB is down |
+| 2026-02-08 | Remove StatType internal Name | DisplayName is the sole naming field; unique constraint per profile enforced in DB + API |
+| 2026-02-08 | Equipment duplicate + header actions | Duplicate button with auto-incremented name, Edit/Duplicate/Delete visible in panel header on wide screens |
+| 2026-02-08 | Comma-to-dot decimal input | Comma keypress converted to dot in all numeric inputs for European locale support |
 
 ## Notes
 
 - **Phases 0, 1, 2, and 3** are now complete.
 - Phase 2 added: IGDB integration (Twitch OAuth2 + caching), game profile CRUD (API + UI), equipment slots with drag-and-drop reordering, stat types with auto-naming, equipment CRUD with slot/stat picker dialogs, profile patch notes with version bumping, and per-user equipment/slot selection with optimistic UI.
 - Phase 3 added: Branch-and-bound solver engine with constraint + score pruning, solver service with user state filtering, REST API for solving and preset CRUD, Angular solver tab with dynamic constraint/priority editors, results display with expandable loadout details, preset save/load, and 18 xUnit tests.
+- Post-Phase 3 refinements: Equipment duplicate button with auto-naming, always-visible header actions, comma-to-dot decimal conversion, StatType simplified to single DisplayName with per-profile uniqueness.
 - Ready to begin **Phase 4**: Social features (public profiles, search, voting).
 - See `spec/README.md` for the full list of deferred future enhancements.
