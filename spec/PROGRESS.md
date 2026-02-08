@@ -135,6 +135,7 @@
 | 2026-02-08 | Stop using cleanup | Stopping use of a profile also cleans up user equipment/slot states for that profile |
 | 2026-02-08 | Solver presets shared on public profiles | Public profile detail includes solver presets; non-owners can see/load presets in solver tab |
 | 2026-02-08 | Unsubscribe from used profiles | "Stop Using" button on dashboard cards (non-owned) and profile editor header |
+| 2026-02-08 | Dark mode default + theme toggle | ThemeService with localStorage persistence, dark default, sun/moon toggle in toolbar; theme-aware color-mix backgrounds |
 
 ## Notes
 
@@ -143,6 +144,6 @@
 - Phase 3 added: Branch-and-bound solver engine with constraint + score pruning, solver service with user state filtering, REST API for solving and preset CRUD, Angular solver tab with dynamic constraint/priority editors, results display with expandable loadout details, preset save/load, and 18 xUnit tests.
 - Post-Phase 3 refinements: Equipment duplicate button with auto-naming, always-visible header actions, comma-to-dot decimal conversion, StatType simplified to single DisplayName with per-profile uniqueness.
 - Phase 4 added: ISocialService + SocialController for visibility toggle, browse/search public profiles (filter by game, sort by votes/usage/newest/name/creator, pagination), upvote/downvote system, deep-copy profiles to own account, "use" public profiles (linked read-only), public profile detail page with overview/equipment/solver-presets/patch-notes tabs, Browse page in toolbar, visibility slide toggle in profile editor general tab.
-- Post-Phase 4 fixes: Solver presets visible to non-owners in solver tab (read-only load), "Stop Using" button on dashboard and profile editor for unsubscribing from used profiles.
+- Post-Phase 4 fixes: Solver presets visible to non-owners in solver tab (read-only load), "Stop Using" button on dashboard and profile editor for unsubscribing from used profiles. Dark mode as default with light/dark toggle in toolbar, theme-aware backgrounds across all components.
 - Ready to begin **Phase 5**: Polish & infrastructure.
 - See `spec/README.md` for the full list of deferred future enhancements.
