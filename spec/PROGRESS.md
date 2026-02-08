@@ -58,14 +58,14 @@
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Solver algorithm (branch-and-bound) | :white_large_square: | With constraint pruning, 10s timeout, empty slots allowed |
-| Solver service implementation | :white_large_square: | Returns top N results, respects user's enabled slots/items |
-| Solver API endpoint | :white_large_square: | POST constraints + priorities, return ranked results |
-| Solver UI — constraint editor | :white_large_square: | |
-| Solver UI — priority/weight editor | :white_large_square: | |
-| Solver UI — results display | :white_large_square: | Show top N loadouts + score breakdown |
-| Solver presets (save/load) | :white_large_square: | |
-| Solver unit tests (xUnit) | :white_large_square: | Critical path — test early |
+| Solver algorithm (branch-and-bound) | :white_check_mark: | SolverEngine with score + constraint pruning, 10s timeout, empty slots, shared-item dedup |
+| Solver service implementation | :white_check_mark: | ISolverService + SolverService — loads profile data, filters by user state, runs solver |
+| Solver API endpoint | :white_check_mark: | POST /solver/solve + preset CRUD under /solver/presets, input validation |
+| Solver UI — constraint editor | :white_check_mark: | Dynamic constraint rows with stat select, operator, and value inputs |
+| Solver UI — priority/weight editor | :white_check_mark: | Dynamic priority rows with stat select and weight input |
+| Solver UI — results display | :white_check_mark: | Expandable accordion with rank, score, stat totals, and per-slot assignments |
+| Solver presets (save/load) | :white_check_mark: | Create/update/delete presets, load preset populates constraint + priority config |
+| Solver unit tests (xUnit) | :white_check_mark: | 18 tests covering: basic solving, constraints, multi-slot, shared items, TopN, cancellation, edge cases |
 
 ## Phase 4: Social Features
 
@@ -130,7 +130,8 @@
 
 ## Notes
 
-- **Phases 0, 1, and 2** are now complete.
+- **Phases 0, 1, 2, and 3** are now complete.
 - Phase 2 added: IGDB integration (Twitch OAuth2 + caching), game profile CRUD (API + UI), equipment slots with drag-and-drop reordering, stat types with auto-naming, equipment CRUD with slot/stat picker dialogs, profile patch notes with version bumping, and per-user equipment/slot selection with optimistic UI.
-- Ready to begin **Phase 3**: Solver algorithm and UI.
+- Phase 3 added: Branch-and-bound solver engine with constraint + score pruning, solver service with user state filtering, REST API for solving and preset CRUD, Angular solver tab with dynamic constraint/priority editors, results display with expandable loadout details, preset save/load, and 18 xUnit tests.
+- Ready to begin **Phase 4**: Social features (public profiles, search, voting).
 - See `spec/README.md` for the full list of deferred future enhancements.
