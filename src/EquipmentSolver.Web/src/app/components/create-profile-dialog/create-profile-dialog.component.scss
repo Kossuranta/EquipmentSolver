@@ -1,0 +1,48 @@
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.error-message {
+  color: var(--mat-sys-error);
+  margin-bottom: 16px;
+}
+
+.game-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.game-option-cover {
+  width: 32px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.selected-game-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.selected-cover {
+  width: 48px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.selected-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.check-icon {
+  color: var(--mat-sys-primary);
+}

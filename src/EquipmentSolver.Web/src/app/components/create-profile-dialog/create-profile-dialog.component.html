@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>Create Game Profile</h2>
+
+<mat-dialog-content>
+  @if (error()) {
+    <p class="error-message">{{ error() }}</p>
+  }
+
+  <mat-form-field class="full-width">
+    <mat-label>Game</mat-label>
+    <input
+      matInput
+      [formControl]="gameSearchControl"
+      [matAutocomplete]="auto"
+      placeholder="Search for a game..."
+    />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="displayGame"
+      (optionSelected)="selectGame($event.option.value)"
+    >
+      @for (game of gameResults(); track game.igdbId) {
+        <mat-option [value]="game">
+          <div class="game-option">
+            @if (game.coverUrl) {
+              <img [src]="game.coverUrl" [alt]="game.name" class="game-option-cover" />
+            }
+            <span>{{ game.name }}</span>
+          </div>
+        </mat-option>
+      }
+    </mat-autocomplete>
+    @if (searching()) {
+      <mat-spinner matSuffix diameter="20"></mat-spinner>
+    }
+    <mat-hint>Search IGDB for your game. Results are cached — new games may take up to 24h to appear.</mat-hint>
+  </mat-form-field>
+
+  @if (selectedGame()) {
+    <div class="selected-game-preview">
+      @if (selectedGame()!.coverUrl) {
+        <img [src]="selectedGame()!.coverUrl" [alt]="selectedGame()!.name" class="selected-cover" />
+      }
+      <span class="selected-name">{{ selectedGame()!.name }}</span>
+      <mat-icon class="check-icon">check_circle</mat-icon>
+    </div>
+  }
+
+  <form [formGroup]="form">
+    <mat-form-field class="full-width">
+      <mat-label>Description (optional)</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        rows="3"
+        placeholder="e.g., PvP build, Max magic resist..."
+      ></textarea>
+      <mat-hint align="end">{{ form.value.description?.length ?? 0 }}/500</mat-hint>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()" [disabled]="saving()">Cancel</button>
+  <button
+    mat-flat-button
+    (click)="save()"
+    [disabled]="saving() || !selectedGame()"
+  >
+    @if (saving()) {
+      <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+      Create
+    }
+  </button>
+</mat-dialog-actions>

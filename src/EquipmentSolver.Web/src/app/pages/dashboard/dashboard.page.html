@@ -1,17 +1,92 @@
-<h1>My Game Profiles</h1>
-
-<div class="empty-state">
-  <mat-card>
-    <mat-card-content>
-      <div class="empty-state-content">
-        <mat-icon class="empty-icon">sports_esports</mat-icon>
-        <h2>No profiles yet</h2>
-        <p>Create your first game profile to start optimizing equipment loadouts.</p>
-        <button mat-flat-button>
-          <mat-icon>add</mat-icon>
-          Create Profile
-        </button>
-      </div>
-    </mat-card-content>
-  </mat-card>
+<div class="dashboard-header">
+  <h1>My Game Profiles</h1>
+  <button mat-flat-button (click)="openCreateDialog()">
+    <mat-icon>add</mat-icon>
+    Create Profile
+  </button>
 </div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+} @else if (error()) {
+  <div class="error-state">
+    <mat-card>
+      <mat-card-content>
+        <p class="error-message">{{ error() }}</p>
+        <button mat-flat-button (click)="loadProfiles()">Retry</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+} @else if (profiles().length === 0) {
+  <div class="empty-state">
+    <mat-card>
+      <mat-card-content>
+        <div class="empty-state-content">
+          <mat-icon class="empty-icon">sports_esports</mat-icon>
+          <h2>No profiles yet</h2>
+          <p>Create your first game profile to start optimizing equipment loadouts.</p>
+          <button mat-flat-button (click)="openCreateDialog()">
+            <mat-icon>add</mat-icon>
+            Create Profile
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+} @else {
+  <div class="profiles-grid">
+    @for (profile of profiles(); track profile.id) {
+      <mat-card class="profile-card" (click)="openProfile(profile)">
+        <mat-card-header>
+          @if (profile.gameCoverUrl) {
+            <img mat-card-avatar [src]="profile.gameCoverUrl" [alt]="profile.gameName" class="game-cover" />
+          } @else {
+            <div mat-card-avatar class="game-cover-placeholder">
+              <mat-icon>sports_esports</mat-icon>
+            </div>
+          }
+          <mat-card-title>{{ profile.gameName }}</mat-card-title>
+          <mat-card-subtitle>
+            v{{ profile.version }}
+            @if (!profile.isOwner) {
+              <span> &middot; by {{ profile.ownerName }}</span>
+            }
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (profile.description) {
+            <p class="profile-description">{{ profile.description }}</p>
+          }
+          <div class="profile-stats">
+            <mat-chip-set>
+              <mat-chip>
+                <mat-icon matChipAvatar>view_in_ar</mat-icon>
+                {{ profile.slotCount }} slots
+              </mat-chip>
+              <mat-chip>
+                <mat-icon matChipAvatar>bar_chart</mat-icon>
+                {{ profile.statTypeCount }} stats
+              </mat-chip>
+              <mat-chip>
+                <mat-icon matChipAvatar>shield</mat-icon>
+                {{ profile.equipmentCount }} items
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+          <p class="profile-date">Updated {{ profile.updatedAt | date: 'mediumDate' }}</p>
+        </mat-card-content>
+
+        @if (profile.isOwner) {
+          <mat-card-actions align="end">
+            <button mat-icon-button (click)="deleteProfile($event, profile)" matTooltip="Delete profile">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-card-actions>
+        }
+      </mat-card>
+    }
+  </div>
+}
