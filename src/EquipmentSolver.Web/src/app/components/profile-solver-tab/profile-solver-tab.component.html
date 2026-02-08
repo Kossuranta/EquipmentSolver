@@ -98,6 +98,7 @@
             step="0.1"
             [ngModel]="row.weight"
             (ngModelChange)="updatePriority(i, 'weight', $event)"
+            (keydown)="onDecimalKeydown($event)"
           />
         </mat-form-field>
 
@@ -162,6 +163,7 @@
             type="number"
             [ngModel]="row.value"
             (ngModelChange)="updateConstraint(i, 'value', $event)"
+            (keydown)="onDecimalKeydown($event)"
           />
         </mat-form-field>
 

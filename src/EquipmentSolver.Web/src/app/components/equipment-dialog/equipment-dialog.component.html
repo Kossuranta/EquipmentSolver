@@ -63,6 +63,7 @@
                 type="number"
                 [value]="entry.value"
                 (input)="updateStatValue(i, +$any($event.target).value)"
+                (keydown)="onDecimalKeydown($event)"
               />
             </mat-form-field>
             <button mat-icon-button (click)="removeStat(i)">

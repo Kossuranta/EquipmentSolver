@@ -281,6 +281,14 @@ export class ProfileSolverTabComponent implements OnInit {
 
   // --- Helpers ---
 
+  /** Convert comma to dot for decimal input (European locale support). */
+  onDecimalKeydown(event: KeyboardEvent): void {
+    if (event.key === ',') {
+      event.preventDefault();
+      document.execCommand('insertText', false, '.');
+    }
+  }
+
   getStatDisplayName(statTypeId: number): string {
     return this.statTypes.find(st => st.id === statTypeId)?.displayName ?? '?';
   }

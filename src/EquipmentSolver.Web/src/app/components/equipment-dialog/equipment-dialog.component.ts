@@ -117,6 +117,14 @@ export class EquipmentDialogComponent {
     return this.data.statTypes.filter(st => st.id === currentStatTypeId || !usedIds.has(st.id));
   }
 
+  /** Convert comma to dot for decimal input (European locale support). */
+  onDecimalKeydown(event: KeyboardEvent): void {
+    if (event.key === ',') {
+      event.preventDefault();
+      document.execCommand('insertText', false, '.');
+    }
+  }
+
   isValid(): boolean {
     return this.nameControl.valid && this.selectedSlotIds().size > 0;
   }

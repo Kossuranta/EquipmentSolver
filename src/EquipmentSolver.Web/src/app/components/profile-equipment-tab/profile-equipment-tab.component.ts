@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,13 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { ProfileService } from '../../services/profile.service';
 import {
   EquipmentDto,
   SlotDto,
   StatTypeDto,
-  EquipmentStatInput,
 } from '../../models/profile.models';
 import { EquipmentDialogComponent, EquipmentDialogData } from '../equipment-dialog/equipment-dialog.component';
 
@@ -28,6 +28,7 @@ import { EquipmentDialogComponent, EquipmentDialogData } from '../equipment-dial
     MatCheckboxModule,
     MatExpansionModule,
     MatChipsModule,
+    MatTooltipModule,
   ],
   templateUrl: './profile-equipment-tab.component.html',
   styleUrl: './profile-equipment-tab.component.scss',
@@ -99,6 +100,22 @@ export class ProfileEquipmentTabComponent {
     });
   }
 
+  duplicateEquipment(item: EquipmentDto): void {
+    const newName = this.generateUniqueName(item.name);
+
+    this.error.set(null);
+    this.profileService
+      .createEquipment(this.profileId, {
+        name: newName,
+        compatibleSlotIds: [...item.compatibleSlotIds],
+        stats: item.stats.map(s => ({ statTypeId: s.statTypeId, value: s.value })),
+      })
+      .subscribe({
+        next: eq => this.equipmentChanged.emit([...this.equipment, eq]),
+        error: err => this.error.set(err.error?.errors?.[0] ?? 'Failed to duplicate equipment.'),
+      });
+  }
+
   deleteEquipment(item: EquipmentDto): void {
     if (!confirm(`Delete "${item.name}"?`)) return;
 
@@ -116,6 +133,23 @@ export class ProfileEquipmentTabComponent {
   getStatDisplay(stat: { statTypeId: number; value: number }): string {
     const st = this.statTypes.find(s => s.id === stat.statTypeId);
     return `${st?.displayName ?? 'Unknown'}: ${stat.value}`;
+  }
+
+  /** Generate a unique name by appending an incrementing number. */
+  private generateUniqueName(baseName: string): string {
+    const existingNames = new Set(this.equipment.map(e => e.name));
+
+    // Strip trailing number suffix if present (e.g., "Helmet 2" -> "Helmet")
+    const match = baseName.match(/^(.+?)\s+(\d+)$/);
+    const root = match ? match[1] : baseName;
+
+    let counter = 2;
+    let candidate = `${root} ${counter}`;
+    while (existingNames.has(candidate)) {
+      counter++;
+      candidate = `${root} ${counter}`;
+    }
+    return candidate;
   }
 
   constructor(

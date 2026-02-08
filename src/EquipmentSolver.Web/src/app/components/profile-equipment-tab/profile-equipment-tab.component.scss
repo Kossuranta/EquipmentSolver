@@ -21,6 +21,15 @@
   margin-top: 16px;
 }
 
+// Action buttons in the panel header — always visible
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .equipment-detail {
   padding-top: 8px;
 }
@@ -45,12 +54,4 @@
 
 .stat-row {
   font-size: 14px;
-}
-
-.equipment-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
