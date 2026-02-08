@@ -1,0 +1,36 @@
+---
+description: "commit" command — update progress tracker, create focused commits, and push
+alwaysApply: false
+---
+
+# Commit Command
+
+When the user says "commit", follow these steps:
+
+## 1. Update `spec/PROGRESS.md`
+
+- Review all uncommitted changes and determine what was done.
+- Add entries to the **Decisions Log** table if any new architectural or UX decisions were made.
+- Add or update bullet points in the **Notes** section summarizing the work.
+- Do NOT change task statuses unless a task was fully completed or started.
+
+## 2. Create Small, Focused Commits
+
+- Group related changes into **small, logical commits** — one concern per commit.
+- If changes span multiple unrelated areas (e.g., a feature + a docs update), split them into separate commits.
+- Write commit messages following the existing style:
+  - Short imperative subject line (e.g., "Add slot names to equipment panel description")
+  - Optional body with context (separated by blank line)
+- The `spec/PROGRESS.md` update should be its own commit (or bundled with the feature it documents if trivial).
+
+## 3. Push
+
+- After all commits are created, push to the remote.
+- Report the commit hashes and a brief summary of what was pushed.
+
+## Shell Reminders
+
+- This is a **PowerShell** environment — use `;` to chain commands, not `&&`.
+- Use `git add -A; git commit -m "message"` syntax.
+- For multi-line commit messages, use PowerShell backtick-n for newlines: `` `n ``
+- Do NOT use bash heredocs (`<<EOF`).
