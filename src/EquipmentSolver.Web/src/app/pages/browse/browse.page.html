@@ -1,0 +1,189 @@
+<div class="browse-header">
+  <h1>Browse Public Profiles</h1>
+</div>
+
+<div class="browse-filters">
+  <mat-form-field class="search-field">
+    <mat-label>Search profiles or creators</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Search..." />
+    <mat-icon matPrefix>search</mat-icon>
+    <button matSuffix mat-icon-button (click)="searchControl.setValue('')" [style.visibility]="searchControl.value ? 'visible' : 'hidden'">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-form-field class="game-filter-field">
+    <mat-label>Filter by game</mat-label>
+    <input
+      matInput
+      [formControl]="gameSearchControl"
+      [matAutocomplete]="gameAuto"
+      [placeholder]="selectedGame() ? '' : 'Search for a game...'"
+      [value]="selectedGame() ? selectedGame()!.name : ''"
+      [readonly]="!!selectedGame()"
+    />
+    @if (selectedGame()) {
+      <button matSuffix mat-icon-button (click)="clearGameFilter()">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+    <mat-autocomplete
+      #gameAuto="matAutocomplete"
+      [displayWith]="displayGame"
+      (optionSelected)="selectGame($event.option.value)"
+    >
+      @for (game of gameResults(); track game.igdbId) {
+        <mat-option [value]="game">
+          <div class="game-option">
+            @if (game.coverUrl) {
+              <img [src]="game.coverUrl" [alt]="game.name" class="game-option-cover" />
+            }
+            <span>{{ game.name }}</span>
+          </div>
+        </mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field class="sort-field">
+    <mat-label>Sort by</mat-label>
+    <mat-select [formControl]="sortControl">
+      @for (option of sortOptions; track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+} @else if (error()) {
+  <div class="error-state">
+    <mat-card>
+      <mat-card-content>
+        <p class="error-message">{{ error() }}</p>
+        <button mat-flat-button (click)="loadProfiles()">Retry</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+} @else if (profiles().length === 0) {
+  <div class="empty-state">
+    <mat-card>
+      <mat-card-content>
+        <div class="empty-state-content">
+          <mat-icon class="empty-icon">explore</mat-icon>
+          <h2>No public profiles found</h2>
+          <p>Try adjusting your search or filters.</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+} @else {
+  <div class="profiles-grid">
+    @for (profile of profiles(); track profile.id) {
+      <mat-card class="profile-card" (click)="openProfile(profile)">
+        <mat-card-header>
+          @if (profile.gameCoverUrl) {
+            <img mat-card-avatar [src]="profile.gameCoverUrl" [alt]="profile.gameName" class="game-cover" />
+          } @else {
+            <div mat-card-avatar class="game-cover-placeholder">
+              <mat-icon>sports_esports</mat-icon>
+            </div>
+          }
+          <mat-card-title>{{ profile.name }}</mat-card-title>
+          <mat-card-subtitle>
+            {{ profile.gameName }} &middot; v{{ profile.version }}
+            &middot; by {{ profile.ownerName }}
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (profile.description) {
+            <p class="profile-description">{{ profile.description }}</p>
+          }
+
+          <div class="profile-stats">
+            <mat-chip-set>
+              <mat-chip>
+                <mat-icon matChipAvatar>view_in_ar</mat-icon>
+                {{ profile.slotCount }} slots
+              </mat-chip>
+              <mat-chip>
+                <mat-icon matChipAvatar>bar_chart</mat-icon>
+                {{ profile.statTypeCount }} stats
+              </mat-chip>
+              <mat-chip>
+                <mat-icon matChipAvatar>shield</mat-icon>
+                {{ profile.equipmentCount }} items
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+
+          <div class="social-stats">
+            <span class="vote-score" [class.positive]="profile.voteScore > 0" [class.negative]="profile.voteScore < 0">
+              <mat-icon>thumb_up</mat-icon>
+              {{ profile.voteScore }}
+            </span>
+            <span class="usage-count">
+              <mat-icon>people</mat-icon>
+              {{ profile.usageCount }} users
+            </span>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+          <button
+            mat-icon-button
+            (click)="vote($event, profile, 1)"
+            [class.voted]="profile.userVote === 1"
+            matTooltip="Upvote"
+            [disabled]="profile.isOwner"
+          >
+            <mat-icon>thumb_up</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            (click)="vote($event, profile, -1)"
+            [class.voted-down]="profile.userVote === -1"
+            matTooltip="Downvote"
+            [disabled]="profile.isOwner"
+          >
+            <mat-icon>thumb_down</mat-icon>
+          </button>
+          @if (!profile.isOwner && !profile.isUsing) {
+            <button
+              mat-icon-button
+              (click)="startUsing($event, profile)"
+              matTooltip="Use this profile"
+            >
+              <mat-icon>bookmark_add</mat-icon>
+            </button>
+          }
+          @if (!profile.isOwner) {
+            <button
+              mat-icon-button
+              (click)="copyProfile($event, profile)"
+              matTooltip="Copy to my profiles"
+            >
+              <mat-icon>content_copy</mat-icon>
+            </button>
+          }
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+
+  @if (totalCount() > pageSize()) {
+    <mat-paginator
+      [length]="totalCount()"
+      [pageSize]="pageSize()"
+      [pageIndex]="page() - 1"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  }
+}

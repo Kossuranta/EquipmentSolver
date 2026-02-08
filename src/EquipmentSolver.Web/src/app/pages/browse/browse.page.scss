@@ -1,0 +1,170 @@
+.browse-header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.browse-filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  align-items: flex-start;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.game-filter-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.sort-field {
+  min-width: 160px;
+}
+
+.game-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.game-option-cover {
+  width: 24px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+.error-state {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+
+  .error-message {
+    color: var(--mat-sys-error);
+    margin-bottom: 16px;
+  }
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  opacity: 0.4;
+  margin-bottom: 16px;
+}
+
+.profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+.profile-card {
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.game-cover {
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.game-cover-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.profile-description {
+  margin: 8px 0;
+  opacity: 0.7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-stats {
+  margin: 12px 0;
+}
+
+.social-stats {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.8;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .vote-score {
+    &.positive {
+      color: var(--mat-sys-primary);
+    }
+
+    &.negative {
+      color: var(--mat-sys-error);
+    }
+  }
+}
+
+.voted {
+  color: var(--mat-sys-primary) !important;
+}
+
+.voted-down {
+  color: var(--mat-sys-error) !important;
+}
+
+mat-paginator {
+  margin-top: 16px;
+}

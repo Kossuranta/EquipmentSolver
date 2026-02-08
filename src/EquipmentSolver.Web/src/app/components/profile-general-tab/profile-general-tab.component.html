@@ -15,6 +15,17 @@
         }
 
         @if (isOwner) {
+          <div class="visibility-toggle">
+            <mat-slide-toggle
+              [checked]="profile.isPublic"
+              (change)="toggleVisibility()"
+              [disabled]="togglingVisibility()"
+              matTooltip="Make this profile discoverable by other users"
+            >
+              {{ profile.isPublic ? 'Public' : 'Private' }}
+            </mat-slide-toggle>
+          </div>
+
           <button mat-button (click)="startEditing()">
             <mat-icon>edit</mat-icon>
             Edit Profile

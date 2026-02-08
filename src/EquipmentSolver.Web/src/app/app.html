@@ -1,5 +1,11 @@
 <mat-toolbar color="primary" class="app-toolbar">
   <span class="app-title" routerLink="/dashboard">Equipment Solver</span>
+  @if (authService.isAuthenticated()) {
+    <button mat-button routerLink="/browse" class="nav-link">
+      <mat-icon>explore</mat-icon>
+      Browse
+    </button>
+  }
   <span class="spacer"></span>
   @if (authService.isAuthenticated()) {
     <span class="username">{{ authService.username() }}</span>

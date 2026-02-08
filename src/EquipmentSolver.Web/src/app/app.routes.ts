@@ -23,6 +23,17 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage),
   },
   {
+    path: 'browse',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/browse/browse.page').then(m => m.BrowsePage),
+  },
+  {
+    path: 'browse/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/profile-detail/profile-detail.page').then(m => m.ProfileDetailPage),
+  },
+  {
     path: 'profiles/:id',
     canActivate: [authGuard],
     loadComponent: () =>

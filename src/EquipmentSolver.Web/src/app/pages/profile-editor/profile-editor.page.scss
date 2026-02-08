@@ -34,7 +34,8 @@
 }
 
 .game-badge,
-.version-badge {
+.version-badge,
+.public-badge {
   background: rgba(0, 0, 0, 0.08);
   padding: 4px 10px;
   border-radius: 12px;
@@ -42,9 +43,18 @@
   font-weight: 500;
 }
 
+.public-badge {
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
 .owner-badge {
   opacity: 0.6;
   font-size: 14px;
+}
+
+.stop-using-btn {
+  margin-left: 8px;
 }
 
 .tab-content {

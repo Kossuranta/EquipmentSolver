@@ -5,7 +5,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProfileService } from '../../services/profile.service';
+import { BrowseService } from '../../services/browse.service';
 import { ProfileDetailResponse } from '../../models/profile.models';
 import { DatePipe } from '@angular/common';
 
@@ -18,6 +21,8 @@ import { DatePipe } from '@angular/common';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
     DatePipe,
   ],
   templateUrl: './profile-general-tab.component.html',
@@ -30,6 +35,7 @@ export class ProfileGeneralTabComponent {
 
   editing = signal(false);
   saving = signal(false);
+  togglingVisibility = signal(false);
   error = signal<string | null>(null);
 
   form = new FormGroup({
@@ -75,5 +81,26 @@ export class ProfileGeneralTabComponent {
       });
   }
 
-  constructor(private readonly profileService: ProfileService) {}
+  toggleVisibility(): void {
+    this.togglingVisibility.set(true);
+    this.error.set(null);
+
+    this.browseService
+      .setVisibility(this.profile.id, !this.profile.isPublic)
+      .subscribe({
+        next: () => {
+          this.togglingVisibility.set(false);
+          this.profileUpdated.emit();
+        },
+        error: () => {
+          this.togglingVisibility.set(false);
+          this.error.set('Failed to update visibility.');
+        },
+      });
+  }
+
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly browseService: BrowseService,
+  ) {}
 }

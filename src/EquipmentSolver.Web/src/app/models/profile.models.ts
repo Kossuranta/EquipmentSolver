@@ -228,3 +228,92 @@ export interface UpdatePresetRequest {
   constraints: SolveConstraintInput[];
   priorities: SolvePriorityInput[];
 }
+
+// --- Social / Browse ---
+
+export interface BrowseProfilesResponse {
+  items: BrowseProfileItem[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface BrowseProfileItem {
+  id: number;
+  name: string;
+  gameName: string;
+  igdbGameId: number;
+  gameCoverUrl: string | null;
+  description: string | null;
+  version: string;
+  voteScore: number;
+  usageCount: number;
+  ownerName: string;
+  slotCount: number;
+  statTypeCount: number;
+  equipmentCount: number;
+  createdAt: string;
+  updatedAt: string;
+  userVote: number | null;
+  isUsing: boolean;
+  isOwner: boolean;
+}
+
+export interface PublicProfileDetailResponse {
+  id: number;
+  name: string;
+  gameName: string;
+  igdbGameId: number;
+  gameCoverUrl: string | null;
+  description: string | null;
+  version: string;
+  voteScore: number;
+  usageCount: number;
+  ownerName: string;
+  isOwner: boolean;
+  createdAt: string;
+  updatedAt: string;
+  userVote: number | null;
+  isUsing: boolean;
+  slots: SlotDto[];
+  statTypes: StatTypeDto[];
+  equipment: EquipmentDto[];
+  solverPresets: SolverPresetDetailDto[];
+  patchNotes: PatchNoteDetailDto[];
+}
+
+export interface SolverPresetDetailDto {
+  id: number;
+  name: string;
+  constraints: SolverPresetConstraintDetailDto[];
+  priorities: SolverPresetPriorityDetailDto[];
+}
+
+export interface SolverPresetConstraintDetailDto {
+  statTypeId: number;
+  operator: string;
+  value: number;
+}
+
+export interface SolverPresetPriorityDetailDto {
+  statTypeId: number;
+  weight: number;
+}
+
+export interface PatchNoteDetailDto {
+  id: number;
+  version: string;
+  date: string;
+  content: string;
+}
+
+export interface VoteResponse {
+  newScore: number;
+  userVote: number;
+}
+
+export interface CopyResponse {
+  id: number;
+  name: string;
+}

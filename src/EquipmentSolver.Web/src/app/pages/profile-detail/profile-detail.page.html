@@ -1,0 +1,286 @@
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <p class="error-message">{{ error() }}</p>
+    <button mat-flat-button (click)="loadProfile()">Retry</button>
+    <button mat-button (click)="goBack()">Back to Browse</button>
+  </div>
+} @else if (profile(); as p) {
+  <div class="profile-header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="profile-header-info">
+      @if (p.gameCoverUrl) {
+        <img [src]="p.gameCoverUrl" [alt]="p.gameName" class="header-cover" />
+      }
+      <div class="header-text">
+        <h1>{{ p.name }}</h1>
+        <div class="header-meta">
+          <span class="game-badge">{{ p.gameName }}</span>
+          <span class="version-badge">v{{ p.version }}</span>
+          <span class="owner-badge">by {{ p.ownerName }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Actions Bar -->
+  <div class="social-actions">
+    <div class="vote-section">
+      <button
+        mat-icon-button
+        (click)="vote(1)"
+        [class.voted]="p.userVote === 1"
+        [disabled]="p.isOwner"
+        matTooltip="Upvote"
+      >
+        <mat-icon>thumb_up</mat-icon>
+      </button>
+      <span class="vote-score" [class.positive]="p.voteScore > 0" [class.negative]="p.voteScore < 0">
+        {{ p.voteScore }}
+      </span>
+      <button
+        mat-icon-button
+        (click)="vote(-1)"
+        [class.voted-down]="p.userVote === -1"
+        [disabled]="p.isOwner"
+        matTooltip="Downvote"
+      >
+        <mat-icon>thumb_down</mat-icon>
+      </button>
+    </div>
+
+    <span class="usage-stat">
+      <mat-icon>people</mat-icon>
+      {{ p.usageCount }} users
+    </span>
+
+    <div class="action-buttons">
+      @if (p.isOwner) {
+        <button mat-stroked-button (click)="openInEditor()">
+          <mat-icon>edit</mat-icon>
+          Edit Profile
+        </button>
+      } @else {
+        @if (p.isUsing) {
+          <button mat-stroked-button (click)="stopUsing()">
+            <mat-icon>bookmark_remove</mat-icon>
+            Stop Using
+          </button>
+          <button mat-stroked-button (click)="openInEditor()">
+            <mat-icon>open_in_new</mat-icon>
+            Open in Dashboard
+          </button>
+        } @else {
+          <button mat-flat-button (click)="startUsing()">
+            <mat-icon>bookmark_add</mat-icon>
+            Use This Profile
+          </button>
+        }
+        <button mat-stroked-button (click)="copyProfile()">
+          <mat-icon>content_copy</mat-icon>
+          Copy to My Profiles
+        </button>
+      }
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Tabs: Overview, Equipment, Patch Notes -->
+  <mat-tab-group>
+    <mat-tab label="Overview">
+      <div class="tab-content">
+        @if (p.description) {
+          <mat-card>
+            <mat-card-content>
+              <h3>Description</h3>
+              <p>{{ p.description }}</p>
+            </mat-card-content>
+          </mat-card>
+        }
+
+        <div class="overview-stats">
+          <mat-card>
+            <mat-card-content>
+              <h3>Profile Stats</h3>
+              <div class="stat-chips">
+                <mat-chip-set>
+                  <mat-chip>
+                    <mat-icon matChipAvatar>view_in_ar</mat-icon>
+                    {{ p.slots.length }} Equipment Slots
+                  </mat-chip>
+                  <mat-chip>
+                    <mat-icon matChipAvatar>bar_chart</mat-icon>
+                    {{ p.statTypes.length }} Stat Types
+                  </mat-chip>
+                  <mat-chip>
+                    <mat-icon matChipAvatar>shield</mat-icon>
+                    {{ p.equipment.length }} Equipment Items
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+
+              @if (p.slots.length > 0) {
+                <h4>Equipment Slots</h4>
+                <mat-chip-set>
+                  @for (slot of p.slots; track slot.id) {
+                    <mat-chip>{{ slot.name }}</mat-chip>
+                  }
+                </mat-chip-set>
+              }
+
+              @if (p.statTypes.length > 0) {
+                <h4>Stat Types</h4>
+                <mat-chip-set>
+                  @for (stat of p.statTypes; track stat.id) {
+                    <mat-chip>{{ stat.displayName }}</mat-chip>
+                  }
+                </mat-chip-set>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="profile-info">
+          <p class="meta-line">
+            Created {{ p.createdAt | date: 'mediumDate' }}
+            &middot;
+            Updated {{ p.updatedAt | date: 'mediumDate' }}
+          </p>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Equipment ({{ p.equipment.length }})">
+      <div class="tab-content">
+        @if (p.equipment.length === 0) {
+          <div class="empty-tab">
+            <mat-icon>shield</mat-icon>
+            <p>No equipment items in this profile.</p>
+          </div>
+        } @else {
+          <mat-accordion>
+            @for (equip of p.equipment; track equip.id) {
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>{{ equip.name }}</mat-panel-title>
+                  <mat-panel-description>
+                    {{ getCompatibleSlots(equip.compatibleSlotIds) }}
+                    &middot;
+                    {{ equip.stats.length }} stats
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="equipment-detail">
+                  <h4>Compatible Slots</h4>
+                  <mat-chip-set>
+                    @for (slotId of equip.compatibleSlotIds; track slotId) {
+                      <mat-chip>{{ getSlotName(slotId) }}</mat-chip>
+                    }
+                  </mat-chip-set>
+
+                  @if (equip.stats.length > 0) {
+                    <h4>Stats</h4>
+                    <div class="stat-list">
+                      @for (stat of equip.stats; track stat.statTypeId) {
+                        <div class="stat-row">
+                          <span class="stat-name">{{ getStatName(stat.statTypeId) }}</span>
+                          <span class="stat-value" [class.positive]="stat.value > 0" [class.negative]="stat.value < 0">
+                            {{ stat.value > 0 ? '+' : '' }}{{ stat.value }}
+                          </span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </mat-expansion-panel>
+            }
+          </mat-accordion>
+        }
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Solver Presets ({{ p.solverPresets.length }})">
+      <div class="tab-content">
+        @if (p.solverPresets.length === 0) {
+          <div class="empty-tab">
+            <mat-icon>tune</mat-icon>
+            <p>No solver presets in this profile.</p>
+          </div>
+        } @else {
+          <mat-accordion>
+            @for (preset of p.solverPresets; track preset.id) {
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>{{ preset.name }}</mat-panel-title>
+                  <mat-panel-description>
+                    {{ preset.constraints.length }} constraints &middot;
+                    {{ preset.priorities.length }} priorities
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="preset-detail">
+                  @if (preset.priorities.length > 0) {
+                    <h4>Priorities</h4>
+                    <div class="stat-list">
+                      @for (priority of preset.priorities; track priority.statTypeId) {
+                        <div class="stat-row">
+                          <span class="stat-name">{{ getStatName(priority.statTypeId) }}</span>
+                          <span class="stat-value" [class.positive]="priority.weight > 0" [class.negative]="priority.weight < 0">
+                            {{ priority.weight > 0 ? '+' : '' }}{{ priority.weight }}
+                          </span>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  @if (preset.constraints.length > 0) {
+                    <h4>Constraints</h4>
+                    <div class="stat-list">
+                      @for (constraint of preset.constraints; track constraint.statTypeId) {
+                        <div class="stat-row">
+                          <span class="stat-name">{{ getStatName(constraint.statTypeId) }}</span>
+                          <span class="stat-value">{{ constraint.operator }} {{ constraint.value }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </mat-expansion-panel>
+            }
+          </mat-accordion>
+        }
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Patch Notes ({{ p.patchNotes.length }})">
+      <div class="tab-content">
+        @if (p.patchNotes.length === 0) {
+          <div class="empty-tab">
+            <mat-icon>history</mat-icon>
+            <p>No patch notes yet.</p>
+          </div>
+        } @else {
+          <div class="patch-notes-list">
+            @for (note of p.patchNotes; track note.id) {
+              <mat-card class="patch-note-card">
+                <mat-card-header>
+                  <mat-card-title>v{{ note.version }}</mat-card-title>
+                  <mat-card-subtitle>{{ note.date | date: 'mediumDate' }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <p class="patch-note-content">{{ note.content }}</p>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        }
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+}
