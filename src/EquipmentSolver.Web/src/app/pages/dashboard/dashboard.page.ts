@@ -5,9 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
+import { BrowseService } from '../../services/browse.service';
 import { ProfileResponse } from '../../models/profile.models';
 import { CreateProfileDialogComponent } from '../../components/create-profile-dialog/create-profile-dialog.component';
 import { DatePipe } from '@angular/common';
@@ -20,6 +22,7 @@ import { DatePipe } from '@angular/common';
     MatIconModule,
     MatProgressSpinnerModule,
     MatChipsModule,
+    MatTooltipModule,
     DatePipe,
   ],
   templateUrl: './dashboard.page.html',
@@ -33,6 +36,7 @@ export class DashboardPage implements OnInit {
   constructor(
     readonly authService: AuthService,
     private readonly profileService: ProfileService,
+    private readonly browseService: BrowseService,
     private readonly router: Router,
     private readonly dialog: MatDialog,
   ) {}
@@ -74,11 +78,21 @@ export class DashboardPage implements OnInit {
 
   deleteProfile(event: Event, profile: ProfileResponse): void {
     event.stopPropagation();
-    if (!confirm(`Delete profile for "${profile.gameName}"? This cannot be undone.`)) return;
+    if (!confirm(`Delete profile "${profile.name}"? This cannot be undone.`)) return;
 
     this.profileService.deleteProfile(profile.id).subscribe({
       next: () => this.loadProfiles(),
       error: () => this.error.set('Failed to delete profile.'),
+    });
+  }
+
+  stopUsing(event: Event, profile: ProfileResponse): void {
+    event.stopPropagation();
+    if (!confirm(`Stop using "${profile.name}" by ${profile.ownerName}?`)) return;
+
+    this.browseService.stopUsing(profile.id).subscribe({
+      next: () => this.loadProfiles(),
+      error: () => this.error.set('Failed to stop using profile.'),
     });
   }
 }

@@ -17,8 +17,15 @@
       <h1>{{ p.name }}</h1>
       <span class="game-badge">{{ p.gameName }}</span>
       <span class="version-badge">v{{ p.version }}</span>
+      @if (p.isPublic) {
+        <span class="public-badge">Public</span>
+      }
       @if (!p.isOwner) {
         <span class="owner-badge">by {{ p.ownerName }}</span>
+        <button mat-stroked-button class="stop-using-btn" (click)="stopUsing()" matTooltip="Remove from your dashboard">
+          <mat-icon>bookmark_remove</mat-icon>
+          Stop Using
+        </button>
       }
     </div>
   </div>

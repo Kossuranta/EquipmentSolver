@@ -79,13 +79,17 @@
           <p class="profile-date">Updated {{ profile.updatedAt | date: 'mediumDate' }}</p>
         </mat-card-content>
 
-        @if (profile.isOwner) {
-          <mat-card-actions align="end">
+        <mat-card-actions align="end">
+          @if (profile.isOwner) {
             <button mat-icon-button (click)="deleteProfile($event, profile)" matTooltip="Delete profile">
               <mat-icon>delete</mat-icon>
             </button>
-          </mat-card-actions>
-        }
+          } @else {
+            <button mat-icon-button (click)="stopUsing($event, profile)" matTooltip="Stop using this profile">
+              <mat-icon>bookmark_remove</mat-icon>
+            </button>
+          }
+        </mat-card-actions>
       </mat-card>
     }
   </div>

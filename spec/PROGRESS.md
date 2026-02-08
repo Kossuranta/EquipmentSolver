@@ -71,14 +71,14 @@
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Profile visibility toggle (public/private) | :white_large_square: | |
-| Browse/search public profiles (API + UI) | :white_large_square: | Filter by game (IGDB), search by name/creator |
-| Sort public profiles | :white_large_square: | By votes, usage, newest, alphabetical (name/creator) |
-| Upvote / downvote system | :white_large_square: | |
-| Copy public profile to own account | :white_large_square: | Creates unlinked clone |
-| "Use" a public profile (linked read-only) | :white_large_square: | Auto-updates when owner edits |
-| Display vote score + usage count | :white_large_square: | |
-| Public profile detail page | :white_large_square: | |
+| Profile visibility toggle (public/private) | :white_check_mark: | Slide toggle on General tab, PUT /profiles/{id}/visibility endpoint |
+| Browse/search public profiles (API + UI) | :white_check_mark: | GET /browse with search, gameId filter, sort, pagination; Browse page with cards |
+| Sort public profiles | :white_check_mark: | By votes, usage, newest, name (A-Z), creator (A-Z) |
+| Upvote / downvote system | :white_check_mark: | POST /browse/{id}/vote (+1/-1/0), toggle behavior, can't vote on own profile |
+| Copy public profile to own account | :white_check_mark: | POST /browse/{id}/copy, deep clones slots, stats, equipment, solver presets |
+| "Use" a public profile (linked read-only) | :white_check_mark: | POST/DELETE /browse/{id}/use, appears on dashboard, stop cleans user state |
+| Display vote score + usage count | :white_check_mark: | Shown on browse cards and profile detail page |
+| Public profile detail page | :white_check_mark: | Overview, Equipment (accordion), Patch Notes tabs; vote/use/copy actions |
 
 ## Phase 5: Polish & Infrastructure
 
@@ -130,12 +130,19 @@
 | 2026-02-08 | Remove StatType internal Name | DisplayName is the sole naming field; unique constraint per profile enforced in DB + API |
 | 2026-02-08 | Equipment duplicate + header actions | Duplicate button with auto-incremented name, Edit/Duplicate/Delete visible in panel header on wide screens |
 | 2026-02-08 | Comma-to-dot decimal input | Comma keypress converted to dot in all numeric inputs for European locale support |
+| 2026-02-08 | Social features via SocialController | Separate controller/service for browse, vote, copy, use; visibility toggle on ProfilesController |
+| 2026-02-08 | Deep copy for profile cloning | Copies slots, stat types, equipment (with compatibilities + stats), solver presets (with constraints + priorities); excludes patch notes and votes |
+| 2026-02-08 | Stop using cleanup | Stopping use of a profile also cleans up user equipment/slot states for that profile |
+| 2026-02-08 | Solver presets shared on public profiles | Public profile detail includes solver presets; non-owners can see/load presets in solver tab |
+| 2026-02-08 | Unsubscribe from used profiles | "Stop Using" button on dashboard cards (non-owned) and profile editor header |
 
 ## Notes
 
-- **Phases 0, 1, 2, and 3** are now complete.
+- **Phases 0, 1, 2, 3, and 4** are now complete.
 - Phase 2 added: IGDB integration (Twitch OAuth2 + caching), game profile CRUD (API + UI), equipment slots with drag-and-drop reordering, stat types with auto-naming, equipment CRUD with slot/stat picker dialogs, profile patch notes with version bumping, and per-user equipment/slot selection with optimistic UI.
 - Phase 3 added: Branch-and-bound solver engine with constraint + score pruning, solver service with user state filtering, REST API for solving and preset CRUD, Angular solver tab with dynamic constraint/priority editors, results display with expandable loadout details, preset save/load, and 18 xUnit tests.
 - Post-Phase 3 refinements: Equipment duplicate button with auto-naming, always-visible header actions, comma-to-dot decimal conversion, StatType simplified to single DisplayName with per-profile uniqueness.
-- Ready to begin **Phase 4**: Social features (public profiles, search, voting).
+- Phase 4 added: ISocialService + SocialController for visibility toggle, browse/search public profiles (filter by game, sort by votes/usage/newest/name/creator, pagination), upvote/downvote system, deep-copy profiles to own account, "use" public profiles (linked read-only), public profile detail page with overview/equipment/solver-presets/patch-notes tabs, Browse page in toolbar, visibility slide toggle in profile editor general tab.
+- Post-Phase 4 fixes: Solver presets visible to non-owners in solver tab (read-only load), "Stop Using" button on dashboard and profile editor for unsubscribing from used profiles.
+- Ready to begin **Phase 5**: Polish & infrastructure.
 - See `spec/README.md` for the full list of deferred future enhancements.

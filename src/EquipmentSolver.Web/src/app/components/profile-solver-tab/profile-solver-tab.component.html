@@ -1,27 +1,33 @@
 <!-- Presets Section -->
 <div class="presets-bar">
   <div class="presets-left">
-    @if (isOwner) {
-      <button mat-button [matMenuTriggerFor]="presetMenu">
-        <mat-icon>bookmark</mat-icon>
-        {{ selectedPresetId() ? presetName() : 'Presets' }}
-      </button>
-      <mat-menu #presetMenu="matMenu">
+    <button mat-button [matMenuTriggerFor]="presetMenu">
+      <mat-icon>bookmark</mat-icon>
+      {{ selectedPresetId() ? presetName() : 'Presets' }}
+    </button>
+    <mat-menu #presetMenu="matMenu">
+      @if (isOwner) {
         <button mat-menu-item (click)="newPreset()">
           <mat-icon>add</mat-icon>
           <span>New preset</span>
         </button>
-        @if (presets().length > 0) {
+      }
+      @if (presets().length > 0) {
+        @if (isOwner) {
           <mat-divider></mat-divider>
-          @for (preset of presets(); track preset.id) {
-            <button mat-menu-item (click)="loadPreset(preset)">
-              <mat-icon>{{ selectedPresetId() === preset.id ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
-              <span>{{ preset.name }}</span>
-            </button>
-          }
         }
-      </mat-menu>
-    }
+        @for (preset of presets(); track preset.id) {
+          <button mat-menu-item (click)="loadPreset(preset)">
+            <mat-icon>{{ selectedPresetId() === preset.id ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+            <span>{{ preset.name }}</span>
+          </button>
+        }
+      } @else if (!isOwner) {
+        <button mat-menu-item disabled>
+          <span>No presets available</span>
+        </button>
+      }
+    </mat-menu>
   </div>
 
   @if (isOwner && selectedPresetId() !== null) {

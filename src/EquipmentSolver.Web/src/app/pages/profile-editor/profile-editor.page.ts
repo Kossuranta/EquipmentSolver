@@ -4,7 +4,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProfileService } from '../../services/profile.service';
+import { BrowseService } from '../../services/browse.service';
 import {
   ProfileDetailResponse,
   SlotDto,
@@ -26,6 +28,7 @@ import { ProfileSolverTabComponent } from '../../components/profile-solver-tab/p
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
     ProfileGeneralTabComponent,
     ProfileSlotsTabComponent,
     ProfileStatTypesTabComponent,
@@ -52,6 +55,7 @@ export class ProfileEditorPage implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly profileService: ProfileService,
+    private readonly browseService: BrowseService,
   ) {}
 
   ngOnInit(): void {
@@ -101,5 +105,14 @@ export class ProfileEditorPage implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/dashboard']);
+  }
+
+  stopUsing(): void {
+    if (!confirm(`Stop using "${this.profile()?.name}"?`)) return;
+
+    this.browseService.stopUsing(this.profileId).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
+      error: () => this.error.set('Failed to stop using profile.'),
+    });
   }
 }
