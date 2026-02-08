@@ -11,8 +11,20 @@
     <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
   </button>
   @if (authService.isAuthenticated()) {
-    <span class="username">{{ authService.username() }}</span>
-    <button mat-button (click)="logout()">Logout</button>
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      {{ authService.username() }}
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+      <button mat-menu-item (click)="deleteAccount()" [disabled]="deleting()" class="delete-account-btn">
+        <mat-icon color="warn">delete_forever</mat-icon>
+        <span>Delete Account</span>
+      </button>
+    </mat-menu>
   }
 </mat-toolbar>
 

@@ -34,4 +34,20 @@ body {
   margin: 0;
   height: 100%;
 }
+// Snackbar styles
+.snackbar-success .mdc-snackbar__surface {
+  background-color: var(--mat-sys-primary) !important;
+  color: var(--mat-sys-on-primary) !important;
+}
+
+.snackbar-error .mdc-snackbar__surface {
+  background-color: var(--mat-sys-error) !important;
+  color: var(--mat-sys-on-error) !important;
+}
+
+// Delete account menu item
+.delete-account-btn {
+  color: var(--mat-sys-error) !important;
+}
+
 /* You can add global styles to this file, and also import other style files */
