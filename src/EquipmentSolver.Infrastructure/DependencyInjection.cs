@@ -1,5 +1,6 @@
 using EquipmentSolver.Core.Entities;
 using EquipmentSolver.Core.Interfaces;
+using EquipmentSolver.Core.Models;
 using EquipmentSolver.Infrastructure.Data;
 using EquipmentSolver.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
@@ -33,8 +34,16 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
+        // Caching
+        services.AddMemoryCache();
+
+        // IGDB settings
+        services.Configure<IgdbSettings>(configuration.GetSection(IgdbSettings.SectionName));
+
         // Services
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IGameProfileService, GameProfileService>();
+        services.AddHttpClient<IIgdbService, IgdbService>();
 
         return services;
     }
