@@ -155,5 +155,6 @@
 - Post-Phase 4 fixes: Solver presets visible to non-owners in solver tab (read-only load), "Stop Using" button on dashboard and profile editor for unsubscribing from used profiles. Dark mode as default with light/dark toggle in toolbar, theme-aware backgrounds across all components.
 - Phase 5 (partial): GlobalExceptionHandler middleware for consistent error responses (dev/prod aware), model validation returns ErrorResponse format, global error interceptor + NotificationService (MatSnackBar) on frontend, account deletion with proper NoAction FK cleanup + user menu UI, Dockerfile fixed (.slnx, non-preview images), docker-compose updated with IGDB env vars + logs volume, rate limiting added to all controllers (auth 10/min, API 120/min, solver 10/min).
 - UI polish: Equipment panel description shows actual slot names instead of count, truncated after 2 with "+N more" tooltip.
+- Developer tooling: Added `INDEX.md` (codebase map by feature area), PowerShell dev environment docs in `AGENTS.md`, Cursor "commit" command rule.
 - Remaining for **Phase 5**: Unraid-specific tasks (reverse proxy setup, deployment, backup strategy).
 - See `spec/README.md` for the full list of deferred future enhancements.
