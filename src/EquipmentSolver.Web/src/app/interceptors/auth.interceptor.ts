@@ -7,8 +7,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.getAccessToken();
 
-  // Don't add auth header to auth endpoints
-  if (req.url.includes('/auth/')) {
+  // Don't add auth header to public auth endpoints (login, register, refresh)
+  const publicAuthPaths = ['/auth/login', '/auth/register', '/auth/refresh'];
+  if (publicAuthPaths.some(path => req.url.includes(path))) {
     return next(req);
   }
 
