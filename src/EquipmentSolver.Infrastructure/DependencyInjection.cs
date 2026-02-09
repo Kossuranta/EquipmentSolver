@@ -45,6 +45,7 @@ public static class DependencyInjection
         services.AddScoped<IGameProfileService, GameProfileService>();
         services.AddScoped<ISolverService, SolverService>();
         services.AddScoped<ISocialService, SocialService>();
+        services.AddScoped<IImportExportService, ImportExportService>();
         services.AddHttpClient<IIgdbService, IgdbService>();
 
         return services;
