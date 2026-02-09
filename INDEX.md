@@ -47,6 +47,7 @@ Entry point and HTTP layer.
 | `Controllers/UserStateController.cs` | Per-user equipment/slot enable/disable |
 | `Controllers/SocialController.cs` | Browse, vote, copy, use public profiles |
 | `Controllers/GamesController.cs` | IGDB game search proxy |
+| `Controllers/ImportExportController.cs` | CSV template, bulk import, profile export/import/replace |
 
 ### DTOs
 
@@ -97,6 +98,7 @@ Domain models, business interfaces, and solver logic. No dependencies on infrast
 | `Interfaces/IAuthService.cs` | Auth operations contract |
 | `Interfaces/IGameProfileService.cs` | Profile CRUD contract |
 | `Interfaces/IIgdbService.cs` | IGDB search contract |
+| `Interfaces/IImportExportService.cs` | CSV equipment + JSON profile import/export contract + DTOs |
 | `Interfaces/ISocialService.cs` | Social features contract |
 | `Interfaces/ISolverService.cs` | Solver execution contract |
 
@@ -137,6 +139,7 @@ EF Core, service implementations, external integrations.
 | `Services/AuthService.cs` | Identity + JWT auth implementation |
 | `Services/GameProfileService.cs` | Profile CRUD, slots, stats, equipment, presets, user state |
 | `Services/IgdbService.cs` | IGDB API client with Twitch OAuth2 + stale-while-revalidate cache |
+| `Services/ImportExportService.cs` | CSV template generation, bulk equipment import, profile JSON export/import/replace |
 | `Services/SocialService.cs` | Browse, vote, copy, use public profiles |
 | `Services/SolverService.cs` | Loads profile data, filters by user state, runs solver engine |
 
@@ -181,10 +184,18 @@ Angular application with Angular Material.
 | `components/profile-general-tab/` | General settings tab (name, game, description, visibility) |
 | `components/profile-slots-tab/` | Slots tab with drag-and-drop reordering |
 | `components/profile-stat-types-tab/` | Stat types tab with inline editing |
-| `components/profile-equipment-tab/` | Equipment list tab (accordion, slot names, stats) |
+| `components/profile-equipment-tab/` | Equipment list tab (accordion, slot names, stats, CSV menu) |
 | `components/profile-solver-tab/` | Solver tab (constraints, priorities, presets, results) |
 | `components/profile-patch-notes-tab/` | Patch notes tab (version bump, history) |
 | `components/profile-user-selection-tab/` | Per-user equipment/slot enable/disable toggles |
+| `components/import-mapping-dialog/` | Dialog: CSV import column mapping (slots + stats) with fuzzy matching |
+| `components/profile-import-dialog/` | Dialog: profile replace with backup warning + file upload |
+
+### Utils
+
+| File | Purpose |
+|------|---------|
+| `utils/csv.utils.ts` | CSV parse/generate (RFC 4180), Levenshtein distance, file download/read helpers |
 
 ### Services
 
@@ -228,3 +239,4 @@ Angular application with Angular Material.
 | File | Purpose |
 |------|---------|
 | `Solver/SolverEngineTests.cs` | 18 xUnit tests for the solver engine |
+| `ImportExport/ImportExportServiceTests.cs` | 15 xUnit tests for CSV template, bulk import, profile export/import/replace |

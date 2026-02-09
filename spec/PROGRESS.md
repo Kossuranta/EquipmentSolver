@@ -52,7 +52,8 @@
 | Equipment CRUD (API) | :white_check_mark: | EquipmentController with slot/stat validation, replace-on-update pattern |
 | Equipment editor UI | :white_check_mark: | Equipment dialog with slot checkboxes + stat picker; duplicate button, header actions always visible, comma-to-dot decimal input |
 | Per-user equipment selection (API + UI) | :white_check_mark: | UserStateController, toggle items/slots, enable/disable all, optimistic UI updates |
-| Bulk import/export equipment | :white_large_square: | Deferred — nice-to-have |
+| Bulk import/export equipment (CSV) | :white_check_mark: | CSV template, export, import with slot/stat mapping dialog |
+| Profile JSON export/import | :white_check_mark: | Export profile, import as new, replace existing with backup warning |
 
 ## Phase 3: Solver
 
@@ -146,6 +147,8 @@
 | 2026-02-08 | Equipment panel shows slot names | Panel description displays actual slot names (truncated after 2 with tooltip) instead of just a count |
 | 2026-02-08 | Replace window.confirm() with Material Dialog | Reusable ConfirmDialogComponent for all destructive actions; non-blocking, automation-friendly, consistent UX |
 | 2026-02-08 | Auth interceptor scoped to public endpoints | Interceptor was skipping Authorization header for all `/auth/` URLs; narrowed to only `/auth/login`, `/auth/register`, `/auth/refresh` |
+| 2026-02-09 | Equipment CSV import/export | Two-header-row CSV format (type + name), frontend-side CSV parse/generate, import mapping dialog with generate/map/ignore for slots and stats, fuzzy matching via Levenshtein |
+| 2026-02-09 | Profile JSON import/export | Names instead of IDs for portability; export, import-as-new, replace-existing (transactional with user state cleanup); backup warning dialog |
 
 ## Notes
 
@@ -159,5 +162,6 @@
 - UI polish: Equipment panel description shows actual slot names instead of count, truncated after 2 with "+N more" tooltip. Replaced all `window.confirm()` calls with a reusable Material confirm dialog for better UX and browser automation compatibility.
 - Bug fix: Auth interceptor was skipping Authorization header for all `/auth/` URLs, which prevented authenticated calls to `/auth/account` (delete account). Narrowed exclusion to only public auth endpoints.
 - Developer tooling: Added `INDEX.md` (codebase map by feature area), PowerShell dev environment docs in `AGENTS.md`, Cursor "commit" command rule.
+- **Import/Export** (2026-02-09): Equipment CSV (template, export, import with mapping dialog + fuzzy matching), Profile JSON (export, import as new, replace with backup warning). Backend: IImportExportService + ImportExportController (5 endpoints). Frontend: csv.utils.ts, ImportMappingDialog, ProfileImportDialog, CSV menu on equipment tab, profile actions menu, dashboard import button. Tests: 15 xUnit tests.
 - Remaining for **Phase 5**: Unraid-specific tasks (reverse proxy setup, deployment, backup strategy).
 - See `spec/README.md` for the full list of deferred future enhancements.
