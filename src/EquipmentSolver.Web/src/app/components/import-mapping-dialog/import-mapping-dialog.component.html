@@ -1,0 +1,93 @@
+<h2 mat-dialog-title>Import Equipment — Column Mapping</h2>
+
+<mat-dialog-content>
+  <p class="item-count">Found <strong>{{ itemCount }}</strong> equipment items.</p>
+
+  @if (slotMappings().length > 0) {
+    <div class="section">
+      <h3>Slots ({{ slotMappings().length }} columns)</h3>
+      <div class="mapping-table">
+        <div class="mapping-header">
+          <span class="col-name">CSV Slot Name</span>
+          <span class="col-action">Action</span>
+          <span class="col-target">Map To</span>
+        </div>
+        @for (mapping of slotMappings(); track $index; let i = $index) {
+          <div class="mapping-row">
+            <span class="col-name csv-name">{{ mapping.csvName }}</span>
+            <mat-form-field class="col-action compact-field">
+              <mat-select
+                [value]="mapping.action"
+                (selectionChange)="updateSlotAction(i, $event.value)"
+              >
+                <mat-option value="map">Map to existing</mat-option>
+                <mat-option value="generate">Generate</mat-option>
+                <mat-option value="ignore">Ignore</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="col-target compact-field">
+              <mat-select
+                [value]="mapping.mapToId"
+                [disabled]="mapping.action !== 'map'"
+                (selectionChange)="updateSlotTarget(i, $event.value)"
+              >
+                @for (slot of data.profileSlots; track slot.id) {
+                  <mat-option [value]="slot.id">{{ slot.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (statMappings().length > 0) {
+    @if (slotMappings().length > 0) {
+      <mat-divider></mat-divider>
+    }
+    <div class="section">
+      <h3>Stats ({{ statMappings().length }} columns)</h3>
+      <div class="mapping-table">
+        <div class="mapping-header">
+          <span class="col-name">CSV Stat Name</span>
+          <span class="col-action">Action</span>
+          <span class="col-target">Map To</span>
+        </div>
+        @for (mapping of statMappings(); track $index; let i = $index) {
+          <div class="mapping-row">
+            <span class="col-name csv-name">{{ mapping.csvName }}</span>
+            <mat-form-field class="col-action compact-field">
+              <mat-select
+                [value]="mapping.action"
+                (selectionChange)="updateStatAction(i, $event.value)"
+              >
+                <mat-option value="map">Map to existing</mat-option>
+                <mat-option value="generate">Generate</mat-option>
+                <mat-option value="ignore">Ignore</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="col-target compact-field">
+              <mat-select
+                [value]="mapping.mapToId"
+                [disabled]="mapping.action !== 'map'"
+                (selectionChange)="updateStatTarget(i, $event.value)"
+              >
+                @for (st of data.profileStatTypes; track st.id) {
+                  <mat-option [value]="st.id">{{ st.displayName }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button (click)="submit()" [disabled]="!isValid()">
+    Import {{ itemCount }} items
+  </button>
+</mat-dialog-actions>

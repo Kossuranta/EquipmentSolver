@@ -26,6 +26,10 @@ import {
   PresetResponse,
   CreatePresetRequest,
   UpdatePresetRequest,
+  BulkEquipmentImportRequest,
+  BulkImportResponse,
+  ProfileExportData,
+  ProfileImportResponse,
 } from '../models/profile.models';
 
 @Injectable({ providedIn: 'root' })
@@ -215,5 +219,37 @@ export class ProfileService {
 
   deletePreset(profileId: number, presetId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${profileId}/solver/presets/${presetId}`);
+  }
+
+  // --- Import/Export ---
+
+  downloadCsvTemplate(profileId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${profileId}/equipment/csv-template`, {
+      responseType: 'blob',
+    });
+  }
+
+  bulkImportEquipment(
+    profileId: number,
+    request: BulkEquipmentImportRequest,
+  ): Observable<BulkImportResponse> {
+    return this.http.post<BulkImportResponse>(
+      `${this.apiUrl}/${profileId}/equipment/import`,
+      request,
+    );
+  }
+
+  exportProfile(profileId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${profileId}/export`, {
+      responseType: 'blob',
+    });
+  }
+
+  importProfileAsNew(data: ProfileExportData): Observable<ProfileImportResponse> {
+    return this.http.post<ProfileImportResponse>(`${this.apiUrl}/import`, data);
+  }
+
+  replaceProfile(profileId: number, data: ProfileExportData): Observable<ProfileImportResponse> {
+    return this.http.put<ProfileImportResponse>(`${this.apiUrl}/${profileId}/import`, data);
   }
 }

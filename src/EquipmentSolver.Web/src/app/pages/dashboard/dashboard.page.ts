@@ -10,9 +10,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { BrowseService } from '../../services/browse.service';
-import { ProfileResponse } from '../../models/profile.models';
+import { NotificationService } from '../../services/notification.service';
+import { ProfileResponse, ProfileExportData } from '../../models/profile.models';
 import { CreateProfileDialogComponent } from '../../components/create-profile-dialog/create-profile-dialog.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog.component';
+import { readFileAsText } from '../../utils/csv.utils';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -38,6 +40,7 @@ export class DashboardPage implements OnInit {
     readonly authService: AuthService,
     private readonly profileService: ProfileService,
     private readonly browseService: BrowseService,
+    private readonly notify: NotificationService,
     private readonly router: Router,
     private readonly dialog: MatDialog,
   ) {}
@@ -97,6 +100,40 @@ export class DashboardPage implements OnInit {
         error: () => this.error.set('Failed to delete profile.'),
       });
     });
+  }
+
+  importProfile(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      this.processImportFile(file);
+    };
+    input.click();
+  }
+
+  private async processImportFile(file: File): Promise<void> {
+    try {
+      const text = await readFileAsText(file);
+      const data = JSON.parse(text) as ProfileExportData;
+
+      if (!data.profile?.name) {
+        this.error.set('Invalid profile JSON: missing profile name.');
+        return;
+      }
+
+      this.profileService.importProfileAsNew(data).subscribe({
+        next: result => {
+          this.notify.success(`Profile "${result.name}" imported successfully.`);
+          this.router.navigate(['/profiles', result.id]);
+        },
+        error: err => this.error.set(err.error?.errors?.[0] ?? 'Failed to import profile.'),
+      });
+    } catch {
+      this.error.set('Failed to parse JSON file.');
+    }
   }
 
   stopUsing(event: Event, profile: ProfileResponse): void {

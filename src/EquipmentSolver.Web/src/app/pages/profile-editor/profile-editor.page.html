@@ -27,6 +27,21 @@
           Stop Using
         </button>
       }
+      @if (p.isOwner) {
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu" matTooltip="Profile actions">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #profileMenu="matMenu">
+          <button mat-menu-item (click)="exportProfileJson()">
+            <mat-icon>download</mat-icon>
+            <span>Export Profile (JSON)</span>
+          </button>
+          <button mat-menu-item (click)="openReplaceDialog()">
+            <mat-icon>upload</mat-icon>
+            <span>Import / Replace Profile (JSON)</span>
+          </button>
+        </mat-menu>
+      }
     </div>
   </div>
 
@@ -72,6 +87,7 @@
           [statTypes]="statTypes()"
           [isOwner]="isOwner()"
           (equipmentChanged)="onEquipmentChanged($event)"
+          (profileReloadNeeded)="loadProfile()"
         />
       </div>
     </mat-tab>

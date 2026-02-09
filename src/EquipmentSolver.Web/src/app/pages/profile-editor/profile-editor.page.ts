@@ -5,16 +5,25 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { ProfileService } from '../../services/profile.service';
 import { BrowseService } from '../../services/browse.service';
+import { NotificationService } from '../../services/notification.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog.component';
+import {
+  ProfileImportDialogComponent,
+  ProfileImportDialogData,
+  ProfileImportDialogResult,
+} from '../../components/profile-import-dialog/profile-import-dialog.component';
 import {
   ProfileDetailResponse,
   SlotDto,
   StatTypeDto,
   EquipmentDto,
+  ProfileExportData,
 } from '../../models/profile.models';
+import { downloadFile, readFileAsText } from '../../utils/csv.utils';
 import { ProfileGeneralTabComponent } from '../../components/profile-general-tab/profile-general-tab.component';
 import { ProfileSlotsTabComponent } from '../../components/profile-slots-tab/profile-slots-tab.component';
 import { ProfileStatTypesTabComponent } from '../../components/profile-stat-types-tab/profile-stat-types-tab.component';
@@ -31,6 +40,7 @@ import { ProfileSolverTabComponent } from '../../components/profile-solver-tab/p
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    MatMenuModule,
     ProfileGeneralTabComponent,
     ProfileSlotsTabComponent,
     ProfileStatTypesTabComponent,
@@ -59,6 +69,7 @@ export class ProfileEditorPage implements OnInit {
     private readonly profileService: ProfileService,
     private readonly browseService: BrowseService,
     private readonly dialog: MatDialog,
+    private readonly notify: NotificationService,
   ) {}
 
   ngOnInit(): void {
@@ -108,6 +119,40 @@ export class ProfileEditorPage implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/dashboard']);
+  }
+
+  exportProfileJson(): void {
+    this.profileService.exportProfile(this.profileId).subscribe({
+      next: blob => {
+        const name = this.profile()?.name ?? 'profile';
+        downloadFile(blob, `${name}.json`, 'application/json');
+      },
+      error: () => this.error.set('Failed to export profile.'),
+    });
+  }
+
+  openReplaceDialog(): void {
+    const p = this.profile();
+    if (!p) return;
+
+    const dialogRef = this.dialog.open(ProfileImportDialogComponent, {
+      width: '550px',
+      data: {
+        profileId: this.profileId,
+        profileName: p.name,
+      } satisfies ProfileImportDialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((result: ProfileImportDialogResult | undefined) => {
+      if (!result) return;
+      this.profileService.replaceProfile(this.profileId, result.data).subscribe({
+        next: () => {
+          this.notify.success('Profile replaced successfully.');
+          this.loadProfile();
+        },
+        error: err => this.error.set(err.error?.errors?.[0] ?? 'Failed to replace profile.'),
+      });
+    });
   }
 
   stopUsing(): void {

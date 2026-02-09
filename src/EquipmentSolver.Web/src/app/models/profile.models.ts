@@ -317,3 +317,101 @@ export interface CopyResponse {
   id: number;
   name: string;
 }
+
+// --- Import/Export ---
+
+export interface BulkEquipmentImportRequest {
+  items: BulkEquipmentItem[];
+  slotMappings: SlotMappingEntry[];
+  statMappings: StatMappingEntry[];
+}
+
+export interface BulkEquipmentItem {
+  name: string;
+  slotNames: string[];
+  stats: BulkStatValue[];
+}
+
+export interface BulkStatValue {
+  statName: string;
+  value: number;
+}
+
+export interface SlotMappingEntry {
+  csvSlotName: string;
+  action: 'generate' | 'map' | 'ignore';
+  mapToSlotId?: number;
+}
+
+export interface StatMappingEntry {
+  csvStatName: string;
+  action: 'generate' | 'map' | 'ignore';
+  mapToStatTypeId?: number;
+}
+
+export interface BulkImportResponse {
+  equipment: ImportedEquipmentDto[];
+  newSlots: ImportedSlotDto[];
+  newStatTypes: ImportedStatTypeDto[];
+}
+
+export interface ImportedEquipmentDto {
+  id: number;
+  name: string;
+  compatibleSlotIds: number[];
+  stats: EquipmentStatDto[];
+}
+
+export interface ImportedSlotDto {
+  id: number;
+  name: string;
+  sortOrder: number;
+}
+
+export interface ImportedStatTypeDto {
+  id: number;
+  displayName: string;
+}
+
+export interface ProfileExportData {
+  formatVersion: number;
+  exportedAt: string;
+  profile: ProfileExportProfile;
+}
+
+export interface ProfileExportProfile {
+  name: string;
+  gameName: string;
+  igdbGameId: number;
+  gameCoverUrl: string | null;
+  description: string | null;
+  version: string;
+  slots: { name: string; sortOrder: number }[];
+  statTypes: string[];
+  equipment: ProfileExportEquipment[];
+  solverPresets: ProfileExportPreset[];
+  patchNotes: ProfileExportPatchNote[];
+}
+
+export interface ProfileExportEquipment {
+  name: string;
+  slots: string[];
+  stats: Record<string, number>;
+}
+
+export interface ProfileExportPreset {
+  name: string;
+  constraints: { stat: string; operator: string; value: number }[];
+  priorities: { stat: string; weight: number }[];
+}
+
+export interface ProfileExportPatchNote {
+  version: string;
+  date: string;
+  content: string;
+}
+
+export interface ProfileImportResponse {
+  id: number;
+  name: string;
+}

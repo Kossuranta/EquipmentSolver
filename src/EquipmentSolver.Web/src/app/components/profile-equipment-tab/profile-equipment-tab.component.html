@@ -8,6 +8,24 @@
       <mat-icon>add</mat-icon>
       Add Equipment
     </button>
+    <button mat-stroked-button [matMenuTriggerFor]="csvMenu">
+      <mat-icon>swap_vert</mat-icon>
+      CSV
+    </button>
+    <mat-menu #csvMenu="matMenu">
+      <button mat-menu-item (click)="importCsv()">
+        <mat-icon>upload</mat-icon>
+        <span>Import CSV</span>
+      </button>
+      <button mat-menu-item (click)="exportCsv()" [disabled]="equipment.length === 0">
+        <mat-icon>download</mat-icon>
+        <span>Export CSV</span>
+      </button>
+      <button mat-menu-item (click)="downloadTemplate()">
+        <mat-icon>description</mat-icon>
+        <span>Download Template</span>
+      </button>
+    </mat-menu>
     @if (slots.length === 0) {
       <span class="hint">Add slots first before creating equipment.</span>
     }

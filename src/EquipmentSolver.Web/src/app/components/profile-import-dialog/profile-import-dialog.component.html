@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>Replace Profile</h2>
+
+<mat-dialog-content>
+  <div class="warning-box">
+    <mat-icon class="warning-icon">warning</mat-icon>
+    <div>
+      <p>
+        This will replace <strong>all data</strong> in this profile with the imported file.
+        This includes equipment, slots, stat types, solver presets, and patch notes.
+      </p>
+      <p>
+        It is recommended to export the current version as a backup before replacing.
+      </p>
+    </div>
+  </div>
+
+  <button mat-stroked-button (click)="exportCurrentVersion()">
+    <mat-icon>download</mat-icon>
+    Export Current Version
+  </button>
+
+  <mat-divider></mat-divider>
+
+  <div class="file-section">
+    <p>Select file to import:</p>
+    <div class="file-row">
+      <button mat-stroked-button (click)="selectFile()">
+        <mat-icon>upload_file</mat-icon>
+        Choose File
+      </button>
+      @if (selectedFile(); as file) {
+        <span class="file-name">{{ file.name }}</span>
+      }
+    </div>
+
+    @if (parseError()) {
+      <p class="error-message">{{ parseError() }}</p>
+    }
+
+    @if (parsedData(); as data) {
+      <div class="preview">
+        <p><strong>{{ data.profile.name }}</strong> — {{ data.profile.gameName }}</p>
+        <p class="preview-detail">
+          v{{ data.profile.version }} · {{ data.profile.slots.length }} slots ·
+          {{ data.profile.statTypes.length }} stats · {{ data.profile.equipment.length }} equipment
+        </p>
+      </div>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="warn" (click)="submit()" [disabled]="!parsedData()">
+    Replace Profile
+  </button>
+</mat-dialog-actions>

@@ -8,8 +8,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { ProfileService } from '../../services/profile.service';
+import { NotificationService } from '../../services/notification.service';
 import {
   EquipmentDto,
   SlotDto,
@@ -17,6 +19,18 @@ import {
 } from '../../models/profile.models';
 import { EquipmentDialogComponent, EquipmentDialogData } from '../equipment-dialog/equipment-dialog.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/confirm-dialog.component';
+import {
+  ImportMappingDialogComponent,
+  ImportMappingDialogData,
+  ImportMappingDialogResult,
+} from '../import-mapping-dialog/import-mapping-dialog.component';
+import {
+  parseCsv,
+  extractCsvData,
+  buildEquipmentCsv,
+  downloadFile,
+  readFileAsText,
+} from '../../utils/csv.utils';
 
 @Component({
   selector: 'app-profile-equipment-tab',
@@ -30,6 +44,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/con
     MatExpansionModule,
     MatChipsModule,
     MatTooltipModule,
+    MatMenuModule,
   ],
   templateUrl: './profile-equipment-tab.component.html',
   styleUrl: './profile-equipment-tab.component.scss',
@@ -41,6 +56,7 @@ export class ProfileEquipmentTabComponent {
   @Input({ required: true }) statTypes!: StatTypeDto[];
   @Input({ required: true }) isOwner!: boolean;
   @Output() equipmentChanged = new EventEmitter<EquipmentDto[]>();
+  @Output() profileReloadNeeded = new EventEmitter<void>();
 
   error = signal<string | null>(null);
 
@@ -176,8 +192,92 @@ export class ProfileEquipmentTabComponent {
     return candidate;
   }
 
+  // --- Import/Export ---
+
+  exportCsv(): void {
+    const csv = buildEquipmentCsv(this.equipment, this.slots, this.statTypes);
+    downloadFile(csv, 'equipment.csv', 'text/csv');
+  }
+
+  downloadTemplate(): void {
+    this.profileService.downloadCsvTemplate(this.profileId).subscribe({
+      next: blob => downloadFile(blob, 'equipment-template.csv', 'text/csv'),
+      error: () => this.error.set('Failed to download template.'),
+    });
+  }
+
+  importCsv(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv,text/csv';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      this.processImportFile(file);
+    };
+    input.click();
+  }
+
+  private async processImportFile(file: File): Promise<void> {
+    try {
+      const text = await readFileAsText(file);
+      const parsed = parseCsv(text);
+      const { columns, items } = extractCsvData(parsed);
+
+      if (items.length === 0) {
+        this.error.set('No equipment items found in CSV.');
+        return;
+      }
+
+      const csvSlotNames = [...new Set(columns.filter(c => c.type === 'Slot').map(c => c.name))];
+      const csvStatNames = [...new Set(columns.filter(c => c.type === 'Stat').map(c => c.name))];
+
+      const dialogRef = this.dialog.open(ImportMappingDialogComponent, {
+        width: '700px',
+        data: {
+          items,
+          csvSlotNames,
+          csvStatNames,
+          profileSlots: this.slots,
+          profileStatTypes: this.statTypes,
+        } satisfies ImportMappingDialogData,
+      });
+
+      dialogRef.afterClosed().subscribe((result: ImportMappingDialogResult | undefined) => {
+        if (!result) return;
+        this.executeBulkImport(result);
+      });
+    } catch (e) {
+      this.error.set(e instanceof Error ? e.message : 'Failed to parse CSV file.');
+    }
+  }
+
+  private executeBulkImport(result: ImportMappingDialogResult): void {
+    this.error.set(null);
+    this.profileService.bulkImportEquipment(this.profileId, result.request).subscribe({
+      next: response => {
+        // Merge imported equipment into the existing list
+        const newEquipment: EquipmentDto[] = response.equipment.map(e => ({
+          id: e.id,
+          name: e.name,
+          compatibleSlotIds: e.compatibleSlotIds,
+          stats: e.stats,
+        }));
+        this.equipmentChanged.emit([...this.equipment, ...newEquipment]);
+        this.notify.success(`Imported ${response.equipment.length} equipment items.`);
+
+        // If new slots or stat types were created, signal a full reload
+        if (response.newSlots.length > 0 || response.newStatTypes.length > 0) {
+          this.profileReloadNeeded.emit();
+        }
+      },
+      error: err => this.error.set(err.error?.errors?.[0] ?? 'Failed to import equipment.'),
+    });
+  }
+
   constructor(
     private readonly profileService: ProfileService,
     private readonly dialog: MatDialog,
+    private readonly notify: NotificationService,
   ) {}
 }
