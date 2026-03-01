@@ -149,6 +149,7 @@
 | 2026-02-08 | Auth interceptor scoped to public endpoints | Interceptor was skipping Authorization header for all `/auth/` URLs; narrowed to only `/auth/login`, `/auth/register`, `/auth/refresh` |
 | 2026-02-09 | Equipment CSV import/export | Two-header-row CSV format (type + name), frontend-side CSV parse/generate, import mapping dialog with generate/map/ignore for slots and stats, fuzzy matching via Levenshtein |
 | 2026-02-09 | Profile JSON import/export | Names instead of IDs for portability; export, import-as-new, replace-existing (transactional with user state cleanup); backup warning dialog |
+| 2026-03-01 | Security hardening workflow + agent tooling | Added `vibesec-skill`, a phased security hardening playbook, and a Cursor rule to require per-task progress files for long-running work. |
 
 ## Notes
 
@@ -162,6 +163,7 @@
 - UI polish: Equipment panel description shows actual slot names instead of count, truncated after 2 with "+N more" tooltip. Replaced all `window.confirm()` calls with a reusable Material confirm dialog for better UX and browser automation compatibility.
 - Bug fix: Auth interceptor was skipping Authorization header for all `/auth/` URLs, which prevented authenticated calls to `/auth/account` (delete account). Narrowed exclusion to only public auth endpoints.
 - Developer tooling: Added `INDEX.md` (codebase map by feature area), PowerShell dev environment docs in `AGENTS.md`, Cursor "commit" command rule.
+- Developer tooling (2026-03-01): Added Cursor `vibesec-skill`, `spec/SECURITY-HARDENING-PLAYBOOK.md`, and a rule requiring continuity progress files for larger tasks.
 - **Import/Export** (2026-02-09): Equipment CSV (template, export, import with mapping dialog + fuzzy matching), Profile JSON (export, import as new, replace with backup warning). Backend: IImportExportService + ImportExportController (5 endpoints). Frontend: csv.utils.ts, ImportMappingDialog, ProfileImportDialog, CSV menu on equipment tab, profile actions menu, dashboard import button. Tests: 15 xUnit tests.
 - Remaining for **Phase 5**: Unraid-specific tasks (reverse proxy setup, deployment, backup strategy).
 - See `spec/README.md` for the full list of deferred future enhancements.
