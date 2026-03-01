@@ -1,0 +1,54 @@
+---
+description: Progress files — create/read/update per large task in `progress/`
+alwaysApply: true
+---
+
+# Progress Files Rule
+
+For any **larger task** (multi-step, likely >15 minutes, touches multiple files, or has multiple phases), you MUST maintain a progress file under `progress/` so work can be continued by a future agent without re-auditing the repo.
+
+## When to Create a Progress File
+
+Create a progress file **immediately** when starting a larger task (before making substantive changes), including when the user asks you to follow a playbook like `spec/SECURITY-HARDENING-PLAYBOOK.md`.
+
+## Where + Naming Convention
+
+- Store progress files in: `progress/`
+- File name format:
+  - `YYYY-MM-DD--<task-slug>.md`
+  - The slug should be a short kebab-case description of the task/feature.
+
+Examples:
+- `progress/2026-03-01--security-hardening.md`
+- `progress/2026-03-01--igdb-proxy-rate-limiting.md`
+
+## Always Read/Update While Working
+
+For any task with a progress file:
+
+- At the start of each work session, **read** the relevant progress file first.
+- As you complete steps, **update** the progress file with what changed and what remains.
+- Before ending your turn, ensure the progress file has an accurate **Next steps** section.
+
+## Required Sections (Template)
+
+Each progress file MUST contain, at minimum:
+
+- **Task**: short description + link(s) to any spec (e.g. `@spec/...`)
+- **Created**: date/time
+- **Last updated**: date/time
+- **Goal / success criteria**
+- **Scope**: in-scope / out-of-scope
+- **Plan / phases**: checklist
+- **Work completed**: checklist + short notes
+- **Key decisions**: bullet list (include rationale)
+- **Files changed**: list paths
+- **Commands / migrations**: anything needed to reproduce
+- **Risks / follow-ups**
+- **Next steps**: the exact next actions to continue
+
+## Notes Storage
+
+- Use `progress/` for **continuity notes** (what was done, what to do next).
+- Do not put secrets in progress files (tokens, connection strings, keys).
+
